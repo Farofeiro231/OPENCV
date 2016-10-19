@@ -26,5 +26,5 @@ int main( int argc, char **argv)
 	imshow ( "Display window", image);			//Mostra a imagem dentro
 
 	waitKey(0);
-	return 0
+	return 0;
 }
