@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named pixels
+
+# Build rule for target.
+pixels: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 pixels
+.PHONY : pixels
+
+# fast build rule for target.
+pixels/fast:
+	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/build
+.PHONY : pixels/fast
+
+#=============================================================================
 # Target rules for targets named pixel-manip
 
 # Build rule for target.
@@ -150,6 +163,33 @@ src/pixel-manip.cpp.s:
 	$(MAKE) -f CMakeFiles/pixel-manip.dir/build.make CMakeFiles/pixel-manip.dir/src/pixel-manip.cpp.s
 .PHONY : src/pixel-manip.cpp.s
 
+src/pixels.o: src/pixels.cpp.o
+
+.PHONY : src/pixels.o
+
+# target to build an object file
+src/pixels.cpp.o:
+	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/src/pixels.cpp.o
+.PHONY : src/pixels.cpp.o
+
+src/pixels.i: src/pixels.cpp.i
+
+.PHONY : src/pixels.i
+
+# target to preprocess a source file
+src/pixels.cpp.i:
+	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/src/pixels.cpp.i
+.PHONY : src/pixels.cpp.i
+
+src/pixels.s: src/pixels.cpp.s
+
+.PHONY : src/pixels.s
+
+# target to generate assembly for a file
+src/pixels.cpp.s:
+	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/src/pixels.cpp.s
+.PHONY : src/pixels.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -158,10 +198,14 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... pixels"
 	@echo "... pixel-manip"
 	@echo "... src/pixel-manip.o"
 	@echo "... src/pixel-manip.i"
 	@echo "... src/pixel-manip.s"
+	@echo "... src/pixels.o"
+	@echo "... src/pixels.i"
+	@echo "... src/pixels.s"
 .PHONY : help
 
 

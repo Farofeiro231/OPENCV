@@ -53,6 +53,7 @@ CMAKE_BINARY_DIR = /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/p
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/pixels.dir/all
 all: CMakeFiles/pixel-manip.dir/all
 
 .PHONY : all
@@ -63,9 +64,37 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/pixels.dir/clean
 clean: CMakeFiles/pixel-manip.dir/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/pixels.dir
+
+# All Build rule for target.
+CMakeFiles/pixels.dir/all:
+	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/depend
+	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles --progress-num=3,4 "Built target pixels"
+.PHONY : CMakeFiles/pixels.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/pixels.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pixels.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles 0
+.PHONY : CMakeFiles/pixels.dir/rule
+
+# Convenience name for target.
+pixels: CMakeFiles/pixels.dir/rule
+
+.PHONY : pixels
+
+# clean rule for target.
+CMakeFiles/pixels.dir/clean:
+	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/clean
+.PHONY : CMakeFiles/pixels.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/pixel-manip.dir
