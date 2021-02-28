@@ -51,6 +51,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/regions.dir/DependInfo.cmake"
   "CMakeFiles/pixels.dir/DependInfo.cmake"
   "CMakeFiles/pixel-manip.dir/DependInfo.cmake"
   )

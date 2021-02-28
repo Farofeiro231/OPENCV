@@ -1,55 +1,58 @@
+#include <bits/stdint-uintn.h>
 #include <iostream>
 #include <opencv2/core.hpp>
+#include <opencv2/core/hal/interface.h>
 #include <opencv2/core/matx.hpp>
+#include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <ostream>
 #include <sys/types.h>
 #include <vector>
 
+// This function needs some streamlining. A lisp macro would do the job. 
 void get_coordinates(std::vector<int> &point1, std::vector<int> &point2)
 {
-  // This function needs some streamlining. A lisp macro would do the job. 
+  std::cout << "P1(X): " << point1[0] << std::endl;
+  std::cout << "P1(Y): " << point1[1] << std::endl;
   int temp;
   const char* points[] = {"P(x)", "P(y)"};
-  std::cout << "Please provide the requested coordinate" << std::endl;
+  std::cout << "Please provide the requested coordinates for P1" << std::endl;
   for (int i=0; i<2; i++){
-	std::cout << "P( " << (i==0?"X):":"Y):") << std::endl;
+	std::cout << "P1(" << (i==0?"X):":"Y):") << std::endl;
 	std::cin >> temp;
-	point1.push_back(temp);
+	point1[i] = temp;
   }
+  std::cout << "P1(X): " << point1[0] << std::endl;
+  std::cout << "P1(Y): " << point1[1] << std::endl;
+  std::cout << "Please provide the requested coordinates for P2" << std::endl;
   for (int i=0; i<2; i++){
-	std::cout << "P( " << (i==0?"X):":"Y):") << std::endl;
+	std::cout << "P2(" << (i==0?"X):":"Y):") << std::endl;
 	std::cin >> temp;
-	point2.push_back(temp);
+	point2[i] = temp;
   }
 }
 
-void negate_image(cv::Mat &src_image, cv::Mat &out_image, const std::vector<int> point1, const std::vector<int> point2)
+void negate_image(cv::Mat &src_image, cv::Mat &out_image, std::vector<int> &point1, std::vector<int> &point2)
 {
-
   // This vector is used to "negate" the colors in the original image.
-  cv::Vec3b white;
-  white[0] = 255;
-  white[1] = 255;
-  white[2] = 255;
-  
-  for(int i=point1[0];i<point1[1];i++){
-    for(int j=point2[1];i<point2[1];i++){
-	  out_image.at<cv::Vec3b>(i,j) = white - src_image.at<cv::Vec3b>(i,j);
-    }
-  }
+  uchar white = 255;
 
+  for(int x=point1[0];x<point2[0];x++){
+	for(int y=point1[1];y<point2[1];y++){
+	  std::cout << "Coords: (" << x << "," << y << ")" << std::endl;
+	  out_image.at<uchar>(x,y) = white - src_image.at<uchar>(x,y);
+	}
+  }
 }
 
 int main(int argc, char** argv){
   cv::Mat image;
   cv::Mat negative_image;
   cv::Vec3b val;
-  std::vector<int> p1(2,0);
-  std::vector<int> p2(2,0);
-  uint temp;
+  std::vector<int> p1{20, 100};
+  std::vector<int> p2{30, 150};
 
-  image = cv::imread(argv[0], cv::IMREAD_GRAYSCALE);
+  image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
   if(!image.data){
 	std::cerr << "It was not possible to open the imagem in question! Exiting..." << std::endl;
 	return 0;
@@ -62,10 +65,12 @@ int main(int argc, char** argv){
   get_coordinates(p1, p2);
 
   cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
+  cv::imshow("Window", image);
+  cv::waitKey();
 
   negate_image(image, negative_image, p1, p2);
 
-  cv::imshow("Negative", negative_image);
+  cv::imshow("Window", negative_image);
   cv::waitKey();
 
   return 0;

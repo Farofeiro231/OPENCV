@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named regions
+
+# Build rule for target.
+regions: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 regions
+.PHONY : regions
+
+# fast build rule for target.
+regions/fast:
+	$(MAKE) -f CMakeFiles/regions.dir/build.make CMakeFiles/regions.dir/build
+.PHONY : regions/fast
+
+#=============================================================================
 # Target rules for targets named pixels
 
 # Build rule for target.
@@ -190,6 +203,33 @@ src/pixels.cpp.s:
 	$(MAKE) -f CMakeFiles/pixels.dir/build.make CMakeFiles/pixels.dir/src/pixels.cpp.s
 .PHONY : src/pixels.cpp.s
 
+src/regions.o: src/regions.cpp.o
+
+.PHONY : src/regions.o
+
+# target to build an object file
+src/regions.cpp.o:
+	$(MAKE) -f CMakeFiles/regions.dir/build.make CMakeFiles/regions.dir/src/regions.cpp.o
+.PHONY : src/regions.cpp.o
+
+src/regions.i: src/regions.cpp.i
+
+.PHONY : src/regions.i
+
+# target to preprocess a source file
+src/regions.cpp.i:
+	$(MAKE) -f CMakeFiles/regions.dir/build.make CMakeFiles/regions.dir/src/regions.cpp.i
+.PHONY : src/regions.cpp.i
+
+src/regions.s: src/regions.cpp.s
+
+.PHONY : src/regions.s
+
+# target to generate assembly for a file
+src/regions.cpp.s:
+	$(MAKE) -f CMakeFiles/regions.dir/build.make CMakeFiles/regions.dir/src/regions.cpp.s
+.PHONY : src/regions.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -198,6 +238,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... regions"
 	@echo "... pixels"
 	@echo "... pixel-manip"
 	@echo "... src/pixel-manip.o"
@@ -206,6 +247,9 @@ help:
 	@echo "... src/pixels.o"
 	@echo "... src/pixels.i"
 	@echo "... src/pixels.s"
+	@echo "... src/regions.o"
+	@echo "... src/regions.i"
+	@echo "... src/regions.s"
 .PHONY : help
 
 

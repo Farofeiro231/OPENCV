@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Adding the executable to be created. This needs to come before trying to compile it with commands as: target_include_directories.
 add_executable(pixel-manip src/pixel-manip.cpp)
 add_executable(pixels src/pixels.cpp)
+add_executable(regions src/regions.cpp)
 
 # Finds and loads the settings from the OPENCV package
 find_package(OpenCV REQUIRED)
@@ -23,6 +24,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 # Linking the created executable to the OpenCV libraries.
 target_link_libraries(pixel-manip ${OpenCV_LIBRARIES})
 target_link_libraries(pixels ${OpenCV_LIBRARIES})
+target_link_libraries(regions ${OpenCV_LIBRARIES})
 
 # Exporting the compile_commands.json so we can use eglot
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
