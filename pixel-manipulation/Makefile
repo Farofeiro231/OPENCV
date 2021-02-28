@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named swap-regions
+
+# Build rule for target.
+swap-regions: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 swap-regions
+.PHONY : swap-regions
+
+# fast build rule for target.
+swap-regions/fast:
+	$(MAKE) -f CMakeFiles/swap-regions.dir/build.make CMakeFiles/swap-regions.dir/build
+.PHONY : swap-regions/fast
+
+#=============================================================================
 # Target rules for targets named regions
 
 # Build rule for target.
@@ -230,6 +243,33 @@ src/regions.cpp.s:
 	$(MAKE) -f CMakeFiles/regions.dir/build.make CMakeFiles/regions.dir/src/regions.cpp.s
 .PHONY : src/regions.cpp.s
 
+src/swap-regions.o: src/swap-regions.cpp.o
+
+.PHONY : src/swap-regions.o
+
+# target to build an object file
+src/swap-regions.cpp.o:
+	$(MAKE) -f CMakeFiles/swap-regions.dir/build.make CMakeFiles/swap-regions.dir/src/swap-regions.cpp.o
+.PHONY : src/swap-regions.cpp.o
+
+src/swap-regions.i: src/swap-regions.cpp.i
+
+.PHONY : src/swap-regions.i
+
+# target to preprocess a source file
+src/swap-regions.cpp.i:
+	$(MAKE) -f CMakeFiles/swap-regions.dir/build.make CMakeFiles/swap-regions.dir/src/swap-regions.cpp.i
+.PHONY : src/swap-regions.cpp.i
+
+src/swap-regions.s: src/swap-regions.cpp.s
+
+.PHONY : src/swap-regions.s
+
+# target to generate assembly for a file
+src/swap-regions.cpp.s:
+	$(MAKE) -f CMakeFiles/swap-regions.dir/build.make CMakeFiles/swap-regions.dir/src/swap-regions.cpp.s
+.PHONY : src/swap-regions.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -238,6 +278,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... swap-regions"
 	@echo "... regions"
 	@echo "... pixels"
 	@echo "... pixel-manip"
@@ -250,6 +291,9 @@ help:
 	@echo "... src/regions.o"
 	@echo "... src/regions.i"
 	@echo "... src/regions.s"
+	@echo "... src/swap-regions.o"
+	@echo "... src/swap-regions.i"
+	@echo "... src/swap-regions.s"
 .PHONY : help
 
 

@@ -1,6 +1,11 @@
 [
 {
   "directory": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation",
+  "command": "/usr/bin/c++   -I/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation -isystem /usr/include/opencv4    -std=gnu++11 -o CMakeFiles/swap-regions.dir/src/swap-regions.cpp.o -c /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/src/swap-regions.cpp",
+  "file": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/src/swap-regions.cpp"
+},
+{
+  "directory": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation",
   "command": "/usr/bin/c++   -I/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation -isystem /usr/include/opencv4    -std=gnu++11 -o CMakeFiles/regions.dir/src/regions.cpp.o -c /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/src/regions.cpp",
   "file": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/src/regions.cpp"
 },

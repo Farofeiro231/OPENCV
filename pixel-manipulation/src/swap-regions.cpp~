@@ -1,0 +1,44 @@
+#include <opencv2/core.hpp>
+#include <opencv2/core/hal/interface.h>
+#include <opencv2/core/matx.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
+#include <ostream>
+#include <sys/types.h>
+
+void swap_image(cv::Mat &src_image, cv::Mat &out_image)
+{
+  cv::Mat aux;
+  int rows = src_image.rows;
+  int cols = src_image.cols;
+  aux = src_image;
+  cv::Mat top_left = src_image({0, cols/2}, {0, rows/2});
+  cv::imshow("Window", top_left);
+  cv::waitKey();
+}
+
+
+int main(int argc, char** argv){
+  cv::Mat image;
+  cv::Mat swapped_image;
+  cv::Vec3b val;
+
+  image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
+  if(!image.data){
+	std::cerr << "It was not possible to open the imagem in question! Exiting..." << std::endl;
+	return 0;
+  }
+
+  swapped_image = image;
+
+  cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
+  cv::imshow("Window", image);
+  cv::waitKey();
+
+  swap_image(image, swapped_image);
+
+  cv::imshow("Window", swapped_image);
+  cv::waitKey();
+
+  return 0;
+}

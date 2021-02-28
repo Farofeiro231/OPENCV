@@ -53,6 +53,7 @@ CMAKE_BINARY_DIR = /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/p
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/swap-regions.dir/all
 all: CMakeFiles/regions.dir/all
 all: CMakeFiles/pixels.dir/all
 all: CMakeFiles/pixel-manip.dir/all
@@ -65,11 +66,39 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/swap-regions.dir/clean
 clean: CMakeFiles/regions.dir/clean
 clean: CMakeFiles/pixels.dir/clean
 clean: CMakeFiles/pixel-manip.dir/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/swap-regions.dir
+
+# All Build rule for target.
+CMakeFiles/swap-regions.dir/all:
+	$(MAKE) -f CMakeFiles/swap-regions.dir/build.make CMakeFiles/swap-regions.dir/depend
+	$(MAKE) -f CMakeFiles/swap-regions.dir/build.make CMakeFiles/swap-regions.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles --progress-num=7,8 "Built target swap-regions"
+.PHONY : CMakeFiles/swap-regions.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/swap-regions.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/swap-regions.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles 0
+.PHONY : CMakeFiles/swap-regions.dir/rule
+
+# Convenience name for target.
+swap-regions: CMakeFiles/swap-regions.dir/rule
+
+.PHONY : swap-regions
+
+# clean rule for target.
+CMakeFiles/swap-regions.dir/clean:
+	$(MAKE) -f CMakeFiles/swap-regions.dir/build.make CMakeFiles/swap-regions.dir/clean
+.PHONY : CMakeFiles/swap-regions.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/regions.dir

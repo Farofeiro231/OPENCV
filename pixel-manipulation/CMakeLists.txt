@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(pixel-manip src/pixel-manip.cpp)
 add_executable(pixels src/pixels.cpp)
 add_executable(regions src/regions.cpp)
+add_executable(swap-regions src/swap-regions.cpp)
 
 # Finds and loads the settings from the OPENCV package
 find_package(OpenCV REQUIRED)
@@ -25,6 +26,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 target_link_libraries(pixel-manip ${OpenCV_LIBRARIES})
 target_link_libraries(pixels ${OpenCV_LIBRARIES})
 target_link_libraries(regions ${OpenCV_LIBRARIES})
+target_link_libraries(swap-regions ${OpenCV_LIBRARIES})
 
 # Exporting the compile_commands.json so we can use eglot
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
