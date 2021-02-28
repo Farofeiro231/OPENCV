@@ -74,20 +74,4 @@ int main(int argc, char** argv){
   cv::waitKey();
 
   return 0;
-
-  //  image = cv::imread("../figuras/bolhas.png",cv::IMREAD_COLOR);
-  //
-  //  val[0] = 0;   //B
-  //  val[1] = 120;   //G
-  //  val[2] = 255; //R
-  //
-  //  for(int i=200;i<210;i++){
-  //    for(int j=10;j<200;j++){
-  //	  image.at<cv::Vec3b>(i,j)=val;
-  //    }
-  //  }
-  //
-  //  cv::imshow("janela", image);
-  //  cv::waitKey();
-  //  return 0;
 }
