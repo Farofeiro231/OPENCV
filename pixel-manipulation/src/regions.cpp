@@ -24,6 +24,23 @@ void get_coordinates(std::vector<int> &point1, std::vector<int> &point2)
   }
 }
 
+void negate_image(cv::Mat &src_image, cv::Mat &out_image, const std::vector<int> point1, const std::vector<int> point2)
+{
+
+  // This vector is used to "negate" the colors in the original image.
+  cv::Vec3b white;
+  white[0] = 255;
+  white[1] = 255;
+  white[2] = 255;
+  
+  for(int i=point1[0];i<point1[1];i++){
+    for(int j=point2[1];i<point2[1];i++){
+	  out_image.at<cv::Vec3b>(i,j) = white - src_image.at<cv::Vec3b>(i,j);
+    }
+  }
+
+}
+
 int main(int argc, char** argv){
   cv::Mat image;
   cv::Mat negative_image;
@@ -38,39 +55,34 @@ int main(int argc, char** argv){
 	return 0;
   }
 
+  negative_image = image;
+
+  // Coordinates acquisition for the negative region.
   std::cout << "Let's set P1 and P2 as delimiters to the area of the image where the negative effect will be applied." << std::endl;
   get_coordinates(p1, p2);
 
   cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
 
-  cv::Vec3b white;
-  white[0] = 255;
-  white[1] = 255;
-  white[2] = 255;
-  
+  negate_image(image, negative_image, p1, p2);
 
-  for(int i=p1[0];i<p1[1];i++){
-    for(int j=p1[1];i<p1[1];i++){
-	  image.at<cv::Vec3b>(i,j) = white - image.at<cv::Vec3b>(i,j);
-    }
-  }
-
-  cv::imshow("Negative", image);
+  cv::imshow("Negative", negative_image);
   cv::waitKey();
 
-  image = cv::imread("../figuras/bolhas.png",cv::IMREAD_COLOR);
-
-  val[0] = 0;   //B
-  val[1] = 120;   //G
-  val[2] = 255; //R
-
-  for(int i=200;i<210;i++){
-    for(int j=10;j<200;j++){
-	  image.at<cv::Vec3b>(i,j)=val;
-    }
-  }
-
-  cv::imshow("janela", image);
-  cv::waitKey();
   return 0;
+
+  //  image = cv::imread("../figuras/bolhas.png",cv::IMREAD_COLOR);
+  //
+  //  val[0] = 0;   //B
+  //  val[1] = 120;   //G
+  //  val[2] = 255; //R
+  //
+  //  for(int i=200;i<210;i++){
+  //    for(int j=10;j<200;j++){
+  //	  image.at<cv::Vec3b>(i,j)=val;
+  //    }
+  //  }
+  //
+  //  cv::imshow("janela", image);
+  //  cv::waitKey();
+  //  return 0;
 }
