@@ -1,0 +1,7 @@
+cmake_minimum_required(version 3.0.2)
+
+# Project name
+project(pixel-manip)
+
+# Adding the executable to be created
+add_executable(pixel-manip pixel-manip.cpp)
