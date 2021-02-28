@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation",
+  "command": "/usr/bin/c++   -I/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation -isystem /usr/include/opencv4    -std=gnu++11 -o CMakeFiles/pixel-manip.dir/src/pixel-manip.cpp.o -c /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/src/pixel-manip.cpp",
+  "file": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/src/pixel-manip.cpp"
+}
+]

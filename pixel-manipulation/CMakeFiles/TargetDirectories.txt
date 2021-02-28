@@ -1,0 +1,3 @@
+/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles/rebuild_cache.dir
+/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles/edit_cache.dir
+/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/CMakeFiles/pixel-manip.dir
