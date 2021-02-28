@@ -7,11 +7,15 @@
 #IncludeRegexTransform: 
 
 /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/pixel-manipulation/src/swap-regions.cpp
+opencv2/calib3d.hpp
+-
 opencv2/core.hpp
 -
 opencv2/core/hal/interface.h
 -
 opencv2/core/matx.hpp
+-
+opencv2/core/types.hpp
 -
 opencv2/highgui.hpp
 -
