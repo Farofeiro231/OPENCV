@@ -13,6 +13,8 @@ opencv2/core.hpp
 -
 opencv2/core/hal/interface.h
 -
+opencv2/core/mat.hpp
+-
 opencv2/core/matx.hpp
 -
 opencv2/core/types.hpp
