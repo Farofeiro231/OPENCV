@@ -2,6 +2,7 @@
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/core/matx.hpp>
 #include <opencv2/core/types.hpp>
+#include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <vector>
@@ -48,14 +49,14 @@ void find_hollows(cv::Mat &image)
 
   std::vector<std::vector<cv::Point>> contours;
   std::vector<cv::Vec4i> hierarchy;
-  cv::Scalar scalar_red = {100, 255, 100};
+  cv::Scalar scalar_white = {255, 255, 255};
   int number_hollows = 0;
   
   // Here I'm finding the contours and drawing only those who delimitate a hollow region.
   cv::findContours(image, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
   for (int i=0; i < contours.size(); i+=1){
 	if (hierarchy[i][0] < 0){
-	  cv::drawContours(image, contours, i, scalar_red, 2, cv::LINE_8, hierarchy, 0);
+	  cv::drawContours(image, contours, i, scalar_white, 2, cv::LINE_8, hierarchy, 0);
 	  number_hollows += 1;
 	}
   }
@@ -92,7 +93,7 @@ void count_objects(cv::Mat &image)
     }
   }
 
-  std::cout << "a figura tem " << nobjects << " bolhas\n";
+  std::cout << "The figure has " << nobjects << " bubbles\n";
 }
 
 int main(int argc, char** argv)
@@ -113,14 +114,16 @@ int main(int argc, char** argv)
   count_objects(image);
 
   cv::equalizeHist(image, realce);
-  cv::imshow("image", image);
-  cv::imshow("realce", realce);
+  cv::imshow("Edgless image", image);
+  cv::waitKey();
+  cv::imshow("Highlighted bubbles", realce);
+  cv::waitKey();
 
   find_hollows(realce);
   
-  cv::imshow("Contoured", realce);
+  cv::imshow("Contoured holes", realce);
+  cv::waitKey();
 
   cv::imwrite("labeling.png", image);
-  cv::waitKey();
   return 0;
 }
