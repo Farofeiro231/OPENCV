@@ -49,14 +49,15 @@ void find_hollows(cv::Mat &image)
 
   std::vector<std::vector<cv::Point>> contours;
   std::vector<cv::Vec4i> hierarchy;
-  cv::Scalar scalar_white = {255, 255, 255};
+  cv::Scalar scalar_white = {100};//, 255, 255};
   int number_hollows = 0;
   
   // Here I'm finding the contours and drawing only those who delimitate a hollow region.
-  cv::findContours(image, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+  // Contours whose hierarchy[i][3] value is higher than -1 have parents; hence, they're holes.
+  cv::findContours(image, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
   for (int i=0; i < contours.size(); i+=1){
-	if (hierarchy[i][0] < 0){
-	  cv::drawContours(image, contours, i, scalar_white, 2, cv::LINE_8, hierarchy, 0);
+	if (hierarchy[i][3] > -1){
+	  cv::drawContours(image, contours, i, scalar_white, 2, cv::LINE_8);//, hierarchy, 0);
 	  number_hollows += 1;
 	}
   }
@@ -111,6 +112,11 @@ int main(int argc, char** argv)
   cv::imshow("Original image", image);
   eliminate_edge_objects(image);
 
+  find_hollows(image);
+  
+  cv::imshow("Contoured holes", image);
+  cv::waitKey();
+
   count_objects(image);
 
   cv::equalizeHist(image, realce);
@@ -119,10 +125,6 @@ int main(int argc, char** argv)
   cv::imshow("Highlighted bubbles", realce);
   cv::waitKey();
 
-  find_hollows(realce);
-  
-  cv::imshow("Contoured holes", realce);
-  cv::waitKey();
 
   cv::imwrite("labeling.png", image);
   return 0;
