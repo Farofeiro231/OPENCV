@@ -13,47 +13,49 @@ void swap_image(cv::Mat &src_image, cv::Mat &out_image)
 {
   int rows = src_image.rows;
   int cols = src_image.cols;
-  cv::Mat diagonal = cv::Mat::eye(rows, cols, CV_32F);
+  cv::Mat aux_matrix = cv::Mat::zeros(rows/2, cols/2, CV_8U);
   cv::Mat top_left = src_image({0, cols/2}, {0, rows/2});
   cv::Mat top_right = src_image({0, cols/2}, {rows/2, rows});
   cv::Mat bottom_left = src_image({cols/2, cols}, {0, rows/2});
   cv::Mat bottom_right = src_image({cols/2, cols}, {rows/2, rows});
-  std::cout << "Bottom_right rows: " << bottom_right.rows << std::endl;
-  std::cout << "Bottom_right cols: " << bottom_right.cols << std::endl;
-  std::cout << "cols: " << cols/2 << std::endl;
-  // Here I'm assigning to the top_let of the image the bottom right of the original one.
-  // the CV_8U is the defined uchar type for OpenCV.
-  out_image(cv::Range(0, cols/2), cv::Range(0, rows/2)) = cv::Mat::zeros(rows/2, cols/2, CV_8U) + bottom_right; 
-  // Swapped image's bottom right
-  out_image({cols/2+1, cols-1}, {rows/2+1, rows-1}) = top_left; 
-  // Swapped image's top right
-  out_image({0, cols/2}, {rows/2+1, rows-1}) = bottom_left; 
-  // Swapped image's bottom left
-  out_image({cols/2+1, cols-1}, {0, rows/2}) = top_right; 
 
-  cv::imshow("Window", out_image);
-  cv::waitKey();
+  // Here I'm assigning to the top_let of the image the bottom right of the original one.
+  // the CV_8U is th
+  // e defined uchar type for OpenCV.
+  out_image({0, cols/2}, {0, rows/2}) = aux_matrix + bottom_right; 
+  // Now it's the top_right getting the bottom_left
+  out_image({0, cols/2}, {rows/2, rows}) = aux_matrix + bottom_left; 
+  // Now it's the bottom_left getting the top_right
+  out_image({cols/2, cols}, {0, rows/2}) = aux_matrix + top_right; 
+  // Now it's the bottom_right getting the top_left
+  out_image({cols/2, cols}, {rows/2, rows}) = aux_matrix + top_left; 
 }
 
 
 int main(int argc, char** argv){
   cv::Mat image;
-  cv::Mat swapped_image;
 
+  // Reading the image and exiting the program if there's an error
   image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
   if(!image.data){
 	std::cerr << "It was not possible to open the imagem in question! Exiting..." << std::endl;
 	return 0;
   }
 
-  swapped_image = image;
+  // I defined the swapped_image after reading the image because it needs to know
+  // the dimensions of the original image; otherwise, the compiler will throw me an
+  // error when I try to do operations on it.
+  cv::Mat swapped_image = cv::Mat::zeros(image.rows, image.cols, CV_8U);
 
+  // Plotting the original image simply for display.
   cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
   cv::imshow("Window", image);
   cv::waitKey();
 
+  // Swapping the image's region
   swap_image(image, swapped_image);
 
+  // Displaying the swapped regions.
   cv::imshow("Window", swapped_image);
   cv::waitKey();
 
