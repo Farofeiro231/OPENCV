@@ -13,12 +13,25 @@ void eliminate_edge_objects(cv::Mat &image)
 
   // I'm using j as the first index because x represent the vertical axis (orientes downwards)
   // in the OpenCV referential.
+
+  // Eliminates the bubbles touching the top and bottom edges.
   for(int j=0; j<rows; j=j+rows-1){
 	for(int i=0; i<cols; i+=1){
 	  if(image.at<uchar>(i, j) == 255){
-		p.x = i;
-		p.y = j;
-		cv:floodFill(image, p, 0);
+		p.x = j;
+		p.y = i;
+		cv::floodFill(image, p, 0);
+	  }
+	}
+  }
+
+  // Eliminates the bubbles touching the left and right edges.
+  for(int j=0; j<rows; j+=1){
+	for(int i=0; i<cols; i=i+cols-1){
+	  if(image.at<uchar>(i, j) == 255){
+		p.x = j;
+		p.y = i;
+		cv::floodFill(image, p, 0);
 	  }
 	}
   }
@@ -45,6 +58,7 @@ int main(int argc, char** argv){
   p.x=0;
   p.y=0;
 
+  cv::imshow("Original image", image);
   eliminate_edge_objects(image);
 
   // busca objetos presentes
