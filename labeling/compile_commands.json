@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling",
+  "command": "/usr/bin/c++   -I/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling -isystem /usr/include/opencv4    -std=gnu++11 -o CMakeFiles/labeling.dir/src/labeling.cpp.o -c /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling/src/labeling.cpp",
+  "file": "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling/src/labeling.cpp"
+}
+]
