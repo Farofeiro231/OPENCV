@@ -41,17 +41,32 @@ void eliminate_edge_objects(cv::Mat &image)
 
 }
 
-int main(int argc, char** argv){
-  cv::Mat image, realce;
-  int width, height;
-  int nobjects;
-
+void find_hollows(cv::Mat &image){
   // Taken from the documentation. Contours is a list of all the image's contours, and hierarchy
   // tells me which contours have children (i.e.: have other contours inside of them).
 
   std::vector<std::vector<cv::Point>> contours;
   std::vector<cv::Vec4i> hierarchy;
   cv::Scalar scalar_red = {100, 255, 100};
+  int number_hollows = 0;
+  
+  // Here I'm finding the contours and drawing only those who delimitate a hollow region.
+  cv::findContours(image, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+  for (int i=0; i < contours.size(); i+=1){
+	if (hierarchy[i][0] < 0){
+	  cv::drawContours(image, contours, i, scalar_red, 2, cv::LINE_8, hierarchy, 0);
+	  number_hollows += 1;
+	}
+  }
+
+  std::cout << "The number of hollow bubbles is: " << number_hollows << std::endl;
+}
+
+int main(int argc, char** argv){
+  cv::Mat image, realce;
+  int width, height;
+  int nobjects;
+
   cv::Point p;
 
   image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
@@ -60,13 +75,6 @@ int main(int argc, char** argv){
     std::cerr << "The image didn't load correctly. Exiting...\n";
     return(-1);
   }
-
-  cv::Mat contoured = image.clone();
-  cv::findContours(contoured, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
-  for (int i=0; i < contours.size(); i+=1){
-	cv::drawContours(contoured, contours, i, scalar_red, 2, cv::LINE_8, hierarchy, 0);
-  }
-
 
   cv::imshow("Contoured image", contoured);
 
