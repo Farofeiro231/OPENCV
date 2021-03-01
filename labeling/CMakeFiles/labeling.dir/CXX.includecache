@@ -11,9 +11,15 @@ iostream
 -
 opencv2/core/hal/interface.h
 -
+opencv2/core/matx.hpp
+-
+opencv2/core/types.hpp
+-
 opencv2/imgproc.hpp
 -
 opencv2/opencv.hpp
+-
+vector
 -
 
 /usr/include/opencv4/opencv2/calib3d.hpp
