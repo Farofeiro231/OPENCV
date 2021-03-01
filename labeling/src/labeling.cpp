@@ -77,8 +77,6 @@ void count_objects(cv::Mat &image)
   p.x=0;
   p.y=0;
 
-  std::cout << "The image dimensions are: " << width << "x" << height << std::endl;
-
   // busca objetos presentes
   nobjects=0;
   for(int i=0; i<height; i++){
