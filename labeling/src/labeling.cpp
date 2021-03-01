@@ -43,7 +43,6 @@ void eliminate_edge_objects(cv::Mat &image)
 
 int main(int argc, char** argv){
   cv::Mat image, realce;
-  cv::Mat contoured;
   int width, height;
   int nobjects;
 
@@ -62,9 +61,9 @@ int main(int argc, char** argv){
     return(-1);
   }
 
-  contoured = image;
+  cv::Mat contoured = image.clone();
+  cv::findContours(contoured, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
   for (int i=0; i < contours.size(); i+=1){
-	cv::findContours(contoured, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
 	cv::drawContours(contoured, contours, i, scalar_red, 2, cv::LINE_8, hierarchy, 0);
   }
 
