@@ -41,7 +41,8 @@ void eliminate_edge_objects(cv::Mat &image)
 
 }
 
-void find_hollows(cv::Mat &image){
+void find_hollows(cv::Mat &image)
+{
   // Taken from the documentation. Contours is a list of all the image's contours, and hierarchy
   // tells me which contours have children (i.e.: have other contours inside of them).
 
@@ -62,31 +63,19 @@ void find_hollows(cv::Mat &image){
   std::cout << "The number of hollow bubbles is: " << number_hollows << std::endl;
 }
 
-int main(int argc, char** argv){
-  cv::Mat image, realce;
+void count_objects(cv::Mat &image)
+{
   int width, height;
   int nobjects;
-
   cv::Point p;
-
-  image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
-
-  if(!image.data){
-    std::cerr << "The image didn't load correctly. Exiting...\n";
-    return(-1);
-  }
-
-  cv::imshow("Contoured image", contoured);
 
   width=image.cols;
   height=image.rows;
-  std::cout << "The image dimensions are: " << width << "x" << height << std::endl;
 
   p.x=0;
   p.y=0;
 
-  cv::imshow("Original image", image);
-  eliminate_edge_objects(image);
+  std::cout << "The image dimensions are: " << width << "x" << height << std::endl;
 
   // busca objetos presentes
   nobjects=0;
@@ -102,10 +91,35 @@ int main(int argc, char** argv){
       }
     }
   }
+
   std::cout << "a figura tem " << nobjects << " bolhas\n";
+}
+
+int main(int argc, char** argv)
+{
+  cv::Mat image, realce;
+
+  image = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
+
+  if(!image.data){
+    std::cerr << "The image didn't load correctly. Exiting...\n";
+    return(-1);
+  }
+
+
+  cv::imshow("Original image", image);
+  eliminate_edge_objects(image);
+
+  count_objects(image);
+
   cv::equalizeHist(image, realce);
   cv::imshow("image", image);
   cv::imshow("realce", realce);
+
+  find_hollows(realce);
+  
+  cv::imshow("Contoured", realce);
+
   cv::imwrite("labeling.png", image);
   cv::waitKey();
   return 0;
