@@ -1,3 +1,7 @@
+//------------------------------------------------------------------------------------//
+// This code takes the input from a video recording device, measure it's histogram for//
+// each color and then shows three histogram plots on top of the captured video.      //
+//------------------------------------------------------------------------------------//
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
