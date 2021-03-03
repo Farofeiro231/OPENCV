@@ -1,7 +1,8 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-int main(int argc, char** argv){
+int main(int argc, char** argv)
+{
   cv::Mat image;
   int width, height;
   cv::VideoCapture cap;
@@ -14,11 +15,11 @@ int main(int argc, char** argv){
   bool acummulate = false;
   int key;
 
-	cap.open(2);
+  cap.open(0);
 
   if(!cap.isOpened()){
-    std::cout << "cameras indisponiveis";
-    return -1;
+	std::cerr << "There are no available cameras. Exiting...";
+	return -1;
   }
 
   cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);

@@ -1,4 +1,4 @@
-# Install script for directory: /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling
+# Install script for directory: /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/manip-histogram
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/manip-histogram/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

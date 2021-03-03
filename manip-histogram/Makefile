@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling
+CMAKE_SOURCE_DIR = /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/manip-histogram
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling
+CMAKE_BINARY_DIR = /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/manip-histogram
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling/CMakeFiles /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/manip-histogram/CMakeFiles /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/manip-histogram/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/labeling/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/bacamartes/Documents/UFRN/2020_2/PDI/unidade_1/OPENCV/manip-histogram/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,44 +111,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named labeling
+# Target rules for targets named histogram
 
 # Build rule for target.
-labeling: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 labeling
-.PHONY : labeling
+histogram: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 histogram
+.PHONY : histogram
 
 # fast build rule for target.
-labeling/fast:
-	$(MAKE) -f CMakeFiles/labeling.dir/build.make CMakeFiles/labeling.dir/build
-.PHONY : labeling/fast
+histogram/fast:
+	$(MAKE) -f CMakeFiles/histogram.dir/build.make CMakeFiles/histogram.dir/build
+.PHONY : histogram/fast
 
-src/labeling.o: src/labeling.cpp.o
+src/histogram.o: src/histogram.cpp.o
 
-.PHONY : src/labeling.o
+.PHONY : src/histogram.o
 
 # target to build an object file
-src/labeling.cpp.o:
-	$(MAKE) -f CMakeFiles/labeling.dir/build.make CMakeFiles/labeling.dir/src/labeling.cpp.o
-.PHONY : src/labeling.cpp.o
+src/histogram.cpp.o:
+	$(MAKE) -f CMakeFiles/histogram.dir/build.make CMakeFiles/histogram.dir/src/histogram.cpp.o
+.PHONY : src/histogram.cpp.o
 
-src/labeling.i: src/labeling.cpp.i
+src/histogram.i: src/histogram.cpp.i
 
-.PHONY : src/labeling.i
+.PHONY : src/histogram.i
 
 # target to preprocess a source file
-src/labeling.cpp.i:
-	$(MAKE) -f CMakeFiles/labeling.dir/build.make CMakeFiles/labeling.dir/src/labeling.cpp.i
-.PHONY : src/labeling.cpp.i
+src/histogram.cpp.i:
+	$(MAKE) -f CMakeFiles/histogram.dir/build.make CMakeFiles/histogram.dir/src/histogram.cpp.i
+.PHONY : src/histogram.cpp.i
 
-src/labeling.s: src/labeling.cpp.s
+src/histogram.s: src/histogram.cpp.s
 
-.PHONY : src/labeling.s
+.PHONY : src/histogram.s
 
 # target to generate assembly for a file
-src/labeling.cpp.s:
-	$(MAKE) -f CMakeFiles/labeling.dir/build.make CMakeFiles/labeling.dir/src/labeling.cpp.s
-.PHONY : src/labeling.cpp.s
+src/histogram.cpp.s:
+	$(MAKE) -f CMakeFiles/histogram.dir/build.make CMakeFiles/histogram.dir/src/histogram.cpp.s
+.PHONY : src/histogram.cpp.s
 
 # Help Target
 help:
@@ -158,10 +158,10 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... labeling"
-	@echo "... src/labeling.o"
-	@echo "... src/labeling.i"
-	@echo "... src/labeling.s"
+	@echo "... histogram"
+	@echo "... src/histogram.o"
+	@echo "... src/histogram.i"
+	@echo "... src/histogram.s"
 .PHONY : help
 
 
