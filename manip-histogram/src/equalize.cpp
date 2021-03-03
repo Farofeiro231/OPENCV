@@ -8,69 +8,64 @@
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/core/hal/interface.h>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <ostream>
 #include <vector>
 
 void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB, int nbins, const float *histrange)
 {
-  //std::cout << "Entrei na equalize" << std::endl;
-  //std::cout << src.rows << std::endl;
-  //std::cout << src.cols << std::endl;
-  //std::cout << nbins << std::endl;
   
   const int levels = 255;
   cv::split (src, planes);
-  cv::calcHist(&planes[0], 1, 0, cv::Mat(), histR, 1,
+
+  // In th OpenCV standard, the blue is the first channel, followed by the green one; the last one
+  // is the red channel.
+
+  cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB, 1,
 			   &nbins, &histrange,
 			   true, false);
   cv::calcHist(&planes[1], 1, 0, cv::Mat(), histG, 1,
 			   &nbins, &histrange,
 			   true, false);
-  cv::calcHist(&planes[2], 1, 0, cv::Mat(), histB, 1,
+  cv::calcHist(&planes[2], 1, 0, cv::Mat(), histR, 1,
 			   &nbins, &histrange,
 			   true, false);
-  std::vector<cv::Mat> acummulated_histogram(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
-  std::vector<cv::Mat> equalization_function(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
 
-  //std::cout << "Tamanho de histR" << histR.size << std::endl;
-  //std::cout << "histR.at<float>(64) = " << histR.at<float>(63) << std::endl;
-  //std::cout << "Cheguei antes do for" << std::endl;
+  auto tipo = histR.type();
+  std::vector<cv::Mat> acummulated_histogram(3, cv::Mat(histR.rows, histR.cols, tipo));
+  std::vector<cv::Mat> equalization_function(3, cv::Mat(histR.rows, histR.cols, tipo));
 
   // Here I calculate the acummulated histogram for the red (index = 0), green (index = 1) e blue (index = 2) colors.
+  // I calculated them separetely and then perform the transformations on each individual color-channel. After that,
+  // I merge all of the color channels into the original image.
   
   for(int i=0; i<nbins; i++){
-	if(i > 0){
-	  acummulated_histogram[0].at<int>(i) = histR.at<int>(i) + acummulated_histogram[0].at<int>(i-1);
-	  acummulated_histogram[1].at<int>(i) = histG.at<int>(i) + acummulated_histogram[1].at<int>(i-1);
-	  acummulated_histogram[2].at<int>(i) = histB.at<int>(i) + acummulated_histogram[2].at<int>(i-1);
-	}
-	else{
-	  acummulated_histogram[0].at<float>(i) = histR.at<float>(i);
-	  acummulated_histogram[1].at<int>(i) = histG.at<int>(i);
-	  acummulated_histogram[2].at<int>(i) = histB.at<int>(i);
-	}
+  	if(i > 0){
+  	  acummulated_histogram[0].at<int>(i) = histB.at<float>(i) + acummulated_histogram[0].at<int>(i-1);
+  	  acummulated_histogram[1].at<int>(i) = histG.at<float>(i) + acummulated_histogram[1].at<int>(i-1);
+  	  acummulated_histogram[2].at<int>(i) = histR.at<float>(i) + acummulated_histogram[2].at<int>(i-1);
+  	}
+  	else{
+  	  acummulated_histogram[0].at<int>(i) = histB.at<float>(i);
+  	  acummulated_histogram[1].at<int>(i) = histG.at<float>(i);
+  	  acummulated_histogram[2].at<int>(i) = histB.at<float>(i);
+  	}
   }
-
-  //std::cout << "Passei do for" << std::endl;
 
   for (int i=0; i<nbins; i++){
-	equalization_function[0].at<int>(i) = levels*(acummulated_histogram[0].at<int>(i))/(acummulated_histogram[0].at<int>(nbins-1));
-	equalization_function[1].at<int>(i) = levels*(acummulated_histogram[1].at<int>(i))/(acummulated_histogram[1].at<int>(nbins-1));
-	equalization_function[2].at<int>(i) = levels*(acummulated_histogram[2].at<int>(i))/(acummulated_histogram[2].at<int>(nbins-1));
+  	equalization_function[0].at<int>(i) = levels*(acummulated_histogram[0].at<int>(i))/(acummulated_histogram[0].at<int>(nbins-1));
+  	equalization_function[1].at<int>(i) = levels*(acummulated_histogram[1].at<int>(i))/(acummulated_histogram[1].at<int>(nbins-1));
+  	equalization_function[2].at<int>(i) = levels*(acummulated_histogram[2].at<int>(i))/(acummulated_histogram[2].at<int>(nbins-1));
   }
 
-  //std::cout << "Lol" << std::endl;
   for(int i=0; i<src.rows; i++){
-	for(int j=0; j<src.cols; j++){
-	  //std::cout << "(i, j) = " << i << ", " << j << std::endl;
-	  //std::cout << "std::floor(src.at<float>(i, j)/4) = " << std::floor(planes[0].at<uchar>(i, j)/4) << std::endl;
-	  planes[0].at<uchar>(i, j) = equalization_function[0].at<int>(std::floor(planes[0].at<uchar>(i, j)/4));
-	  planes[1].at<uchar>(i, j) = equalization_function[1].at<int>(std::floor(planes[1].at<uchar>(i, j)/4));
-	  planes[2].at<uchar>(i, j) = equalization_function[2].at<int>(std::floor(planes[2].at<uchar>(i, j)/4));
-	}
+  	for(int j=0; j<src.cols; j++){
+  	  planes[0].at<uchar>(i, j) = equalization_function[0].at<int>(std::floor(planes[0].at<uchar>(i, j)/4));
+  	  planes[1].at<uchar>(i, j) = equalization_function[1].at<int>(std::floor(planes[1].at<uchar>(i, j)/4));
+  	  planes[2].at<uchar>(i, j) = equalization_function[2].at<int>(std::floor(planes[2].at<uchar>(i, j)/4));
+  	}
   }
-
   cv::merge(planes, src);
 }
 
