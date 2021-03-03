@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Adding the executable to be created. This needs to come before trying to compile it with commands as: target_include_directories.
-add_executable(labeling src/histogram.cpp)
+add_executable(histogram src/histogram.cpp)
 
 # Finds and loads the settings from the OPENCV package
 find_package(OpenCV REQUIRED)
