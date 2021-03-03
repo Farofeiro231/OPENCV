@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Adding the executable to be created. This needs to come before trying to compile it with commands as: target_include_directories.
 add_executable(histogram src/histogram.cpp)
+add_executable(equalize src/equalize.cpp)
 
 # Finds and loads the settings from the OPENCV package
 find_package(OpenCV REQUIRED)
@@ -21,6 +22,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # Linking the created executable to the OpenCV libraries.
 target_link_libraries(histogram ${OpenCV_LIBRARIES})
+target_link_libraries(equalize ${OpenCV_LIBRARIES})
 
 # Exporting the compile_commands.json so we can use eglot
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

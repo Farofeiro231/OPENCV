@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named equalize
+
+# Build rule for target.
+equalize: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 equalize
+.PHONY : equalize
+
+# fast build rule for target.
+equalize/fast:
+	$(MAKE) -f CMakeFiles/equalize.dir/build.make CMakeFiles/equalize.dir/build
+.PHONY : equalize/fast
+
+#=============================================================================
 # Target rules for targets named histogram
 
 # Build rule for target.
@@ -122,6 +135,33 @@ histogram: cmake_check_build_system
 histogram/fast:
 	$(MAKE) -f CMakeFiles/histogram.dir/build.make CMakeFiles/histogram.dir/build
 .PHONY : histogram/fast
+
+src/equalize.o: src/equalize.cpp.o
+
+.PHONY : src/equalize.o
+
+# target to build an object file
+src/equalize.cpp.o:
+	$(MAKE) -f CMakeFiles/equalize.dir/build.make CMakeFiles/equalize.dir/src/equalize.cpp.o
+.PHONY : src/equalize.cpp.o
+
+src/equalize.i: src/equalize.cpp.i
+
+.PHONY : src/equalize.i
+
+# target to preprocess a source file
+src/equalize.cpp.i:
+	$(MAKE) -f CMakeFiles/equalize.dir/build.make CMakeFiles/equalize.dir/src/equalize.cpp.i
+.PHONY : src/equalize.cpp.i
+
+src/equalize.s: src/equalize.cpp.s
+
+.PHONY : src/equalize.s
+
+# target to generate assembly for a file
+src/equalize.cpp.s:
+	$(MAKE) -f CMakeFiles/equalize.dir/build.make CMakeFiles/equalize.dir/src/equalize.cpp.s
+.PHONY : src/equalize.cpp.s
 
 src/histogram.o: src/histogram.cpp.o
 
@@ -158,7 +198,11 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... equalize"
 	@echo "... histogram"
+	@echo "... src/equalize.o"
+	@echo "... src/equalize.i"
+	@echo "... src/equalize.s"
 	@echo "... src/histogram.o"
 	@echo "... src/histogram.i"
 	@echo "... src/histogram.s"
