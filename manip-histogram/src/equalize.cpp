@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <opencv2/core.hpp>
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/opencv.hpp>
 #include <ostream>
@@ -13,10 +14,10 @@
 
 void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB, int nbins, const float *histrange)
 {
-  std::cout << "Entrei na equalize" << std::endl;
-  std::cout << src.rows << std::endl;
-  std::cout << src.cols << std::endl;
-  std::cout << nbins << std::endl;
+  //std::cout << "Entrei na equalize" << std::endl;
+  //std::cout << src.rows << std::endl;
+  //std::cout << src.cols << std::endl;
+  //std::cout << nbins << std::endl;
   
   const int levels = 255;
   cv::split (src, planes);
@@ -32,9 +33,9 @@ void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &hist
   std::vector<cv::Mat> acummulated_histogram(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
   std::vector<cv::Mat> equalization_function(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
 
-  std::cout << "Tamanho de histR" << histR.size << std::endl;
-  std::cout << "histR.at<float>(64) = " << histR.at<float>(63) << std::endl;
-  std::cout << "Cheguei antes do for" << std::endl;
+  //std::cout << "Tamanho de histR" << histR.size << std::endl;
+  //std::cout << "histR.at<float>(64) = " << histR.at<float>(63) << std::endl;
+  //std::cout << "Cheguei antes do for" << std::endl;
 
   // Here I calculate the acummulated histogram for the red (index = 0), green (index = 1) e blue (index = 2) colors.
   
@@ -51,7 +52,7 @@ void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &hist
 	}
   }
 
-  std::cout << "Passei do for" << std::endl;
+  //std::cout << "Passei do for" << std::endl;
 
   for (int i=0; i<nbins; i++){
 	equalization_function[0].at<int>(i) = levels*(acummulated_histogram[0].at<int>(i))/(acummulated_histogram[0].at<int>(nbins-1));
@@ -59,12 +60,18 @@ void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &hist
 	equalization_function[2].at<int>(i) = levels*(acummulated_histogram[2].at<int>(i))/(acummulated_histogram[2].at<int>(nbins-1));
   }
 
-  std::cout << "Lol" << std::endl;
+  //std::cout << "Lol" << std::endl;
   for(int i=0; i<src.rows; i++){
 	for(int j=0; j<src.cols; j++){
-	  src.at<int>(i, j) = equalization_function[0].at<int>(std::floor(src.at<int>(i, j)/4));
+	  //std::cout << "(i, j) = " << i << ", " << j << std::endl;
+	  //std::cout << "std::floor(src.at<float>(i, j)/4) = " << std::floor(planes[0].at<uchar>(i, j)/4) << std::endl;
+	  planes[0].at<uchar>(i, j) = equalization_function[0].at<int>(std::floor(planes[0].at<uchar>(i, j)/4));
+	  planes[1].at<uchar>(i, j) = equalization_function[1].at<int>(std::floor(planes[1].at<uchar>(i, j)/4));
+	  planes[2].at<uchar>(i, j) = equalization_function[2].at<int>(std::floor(planes[2].at<uchar>(i, j)/4));
 	}
   }
+
+  cv::merge(planes, src);
 }
 
 int main(int argc, char** argv)
