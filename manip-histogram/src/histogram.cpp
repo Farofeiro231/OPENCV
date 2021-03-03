@@ -30,7 +30,10 @@ int main(int argc, char** argv)
   std::cout << "largura = " << width << std::endl;
   std::cout << "altura  = " << height << std::endl;
 
-  int histw = nbins, histh = nbins/2;
+  // The width of the histogram needs to match the number of bins
+
+  int histw = nbins;
+  int histh = nbins/2;
   cv::Mat histImgR(histh, histw, CV_8UC3, cv::Scalar(0,0,0));
   cv::Mat histImgG(histh, histw, CV_8UC3, cv::Scalar(0,0,0));
   cv::Mat histImgB(histh, histw, CV_8UC3, cv::Scalar(0,0,0));
