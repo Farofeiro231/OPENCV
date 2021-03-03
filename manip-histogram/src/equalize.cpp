@@ -19,8 +19,6 @@ void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &hist
   std::cout << nbins << std::endl;
   
   const int levels = 255;
-  std::vector<cv::Mat> acummulated_histogram(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
-  std::vector<cv::Mat> equalizaiton_function(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
   cv::split (src, planes);
   cv::calcHist(&planes[0], 1, 0, cv::Mat(), histR, 1,
 			   &nbins, &histrange,
@@ -31,6 +29,8 @@ void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &hist
   cv::calcHist(&planes[2], 1, 0, cv::Mat(), histB, 1,
 			   &nbins, &histrange,
 			   true, false);
+  std::vector<cv::Mat> acummulated_histogram(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
+  std::vector<cv::Mat> equalizaiton_function(3, cv::Mat(histR.rows, histR.cols, CV_32SC1));
   std::cout << "Tamanho de histR" << histR.size << std::endl;
   std::cout << "histR.at<float>(64) = " << histR.at<float>(63) << std::endl;
   std::cout << "Cheguei antes do for" << std::endl;
@@ -45,8 +45,9 @@ void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &hist
 	  acummulated_histogram[2].at<int>(i) = histB.at<int>(i) + acummulated_histogram[2].at<int>(i-1);
 	}
 	else{
+	  std::cout << "O valor de i é:" << acummulated_histogram[0].size << std::endl;
+	  acummulated_histogram[0].at<float>(i) = histR.at<float>(i);
 	  std::cout << "O valor de i é:" << i << std::endl;
-	  acummulated_histogram[0].at<float>(i) = histR.at<int>(i);
 	  acummulated_histogram[1].at<int>(i) = histG.at<int>(i);
 	  acummulated_histogram[2].at<int>(i) = histB.at<int>(i);
 	}
