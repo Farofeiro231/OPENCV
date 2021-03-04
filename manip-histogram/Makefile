@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named motion-detector
+
+# Build rule for target.
+motion-detector: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 motion-detector
+.PHONY : motion-detector
+
+# fast build rule for target.
+motion-detector/fast:
+	$(MAKE) -f CMakeFiles/motion-detector.dir/build.make CMakeFiles/motion-detector.dir/build
+.PHONY : motion-detector/fast
+
+#=============================================================================
 # Target rules for targets named equalize
 
 # Build rule for target.
@@ -190,6 +203,33 @@ src/histogram.cpp.s:
 	$(MAKE) -f CMakeFiles/histogram.dir/build.make CMakeFiles/histogram.dir/src/histogram.cpp.s
 .PHONY : src/histogram.cpp.s
 
+src/motiondetector.o: src/motiondetector.cpp.o
+
+.PHONY : src/motiondetector.o
+
+# target to build an object file
+src/motiondetector.cpp.o:
+	$(MAKE) -f CMakeFiles/motion-detector.dir/build.make CMakeFiles/motion-detector.dir/src/motiondetector.cpp.o
+.PHONY : src/motiondetector.cpp.o
+
+src/motiondetector.i: src/motiondetector.cpp.i
+
+.PHONY : src/motiondetector.i
+
+# target to preprocess a source file
+src/motiondetector.cpp.i:
+	$(MAKE) -f CMakeFiles/motion-detector.dir/build.make CMakeFiles/motion-detector.dir/src/motiondetector.cpp.i
+.PHONY : src/motiondetector.cpp.i
+
+src/motiondetector.s: src/motiondetector.cpp.s
+
+.PHONY : src/motiondetector.s
+
+# target to generate assembly for a file
+src/motiondetector.cpp.s:
+	$(MAKE) -f CMakeFiles/motion-detector.dir/build.make CMakeFiles/motion-detector.dir/src/motiondetector.cpp.s
+.PHONY : src/motiondetector.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -198,6 +238,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... motion-detector"
 	@echo "... equalize"
 	@echo "... histogram"
 	@echo "... src/equalize.o"
@@ -206,6 +247,9 @@ help:
 	@echo "... src/histogram.o"
 	@echo "... src/histogram.i"
 	@echo "... src/histogram.s"
+	@echo "... src/motiondetector.o"
+	@echo "... src/motiondetector.i"
+	@echo "... src/motiondetector.s"
 .PHONY : help
 
 

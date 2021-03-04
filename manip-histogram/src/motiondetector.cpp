@@ -13,67 +13,25 @@
 #include <ostream>
 #include <vector>
 
-void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB, int nbins, const float *histrange)
+bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat> &planes, cv::Mat &histB, cv::Mat &histB_plus, int nbins, const float *histrange)
 {
-  const int levels = 255;
-  cv::split (src, planes);
-
-  // In th OpenCV standard, the blue is the first channel, followed by the green one; the last one
-  // is the red channel.
-
+  double hist_min, hist_max;
+  cv::Mat hist_diff;
+  cv::split (image_t, planes);
   cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB, 1,
 			   &nbins, &histrange,
 			   true, false);
-  cv::calcHist(&planes[1], 1, 0, cv::Mat(), histG, 1,
+
+
+  cv::split (image_t_plus, planes);
+  cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB_plus, 1,
 			   &nbins, &histrange,
 			   true, false);
-  cv::calcHist(&planes[2], 1, 0, cv::Mat(), histR, 1,
-			   &nbins, &histrange,
-			   true, false);
+	
+  cv::absdiff(histB_plus, histB, hist_diff);
+  cv::minMaxLoc(hist_diff, &hist_min, &hist_max);
 
-  auto tipo = histR.type();
-  std::vector<cv::Mat> accumulated_histogram(3, cv::Mat(histR.rows, histR.cols, tipo));
-  std::vector<cv::Mat> equalization_function(3, cv::Mat(histR.rows, histR.cols, tipo));
-
-  // Here I calculate the accumulated histogram for the red (index = 0), green (index = 1) e blue (index = 2) colors.
-  // I calculated them separetely and then perform the transformations on each individual color-channel. After that,
-  // I merge all of the color channels into the original image.
-  
-  // Here I calculate  the accumulated histogram for each channel.
-
-  for(int i=0; i<nbins; i++){
-  	if(i > 0){
-  	  accumulated_histogram[0].at<int>(i) = histB.at<float>(i) + accumulated_histogram[0].at<int>(i-1);
-  	  accumulated_histogram[1].at<int>(i) = histG.at<float>(i) + accumulated_histogram[1].at<int>(i-1);
-  	  accumulated_histogram[2].at<int>(i) = histR.at<float>(i) + accumulated_histogram[2].at<int>(i-1);
-  	}
-  	else{
-  	  accumulated_histogram[0].at<int>(i) = histB.at<float>(i);
-  	  accumulated_histogram[1].at<int>(i) = histG.at<float>(i);
-  	  accumulated_histogram[2].at<int>(i) = histB.at<float>(i);
-  	}
-  }
-
-  // Using the accumulated histogram, I calculate the values of the equalization function for each one of the bins
-  // of the histogram.
-
-  for (int i=0; i<nbins; i++){
-  	equalization_function[0].at<int>(i) = levels*(accumulated_histogram[0].at<int>(i))/(accumulated_histogram[0].at<int>(nbins-1));
-  	equalization_function[1].at<int>(i) = levels*(accumulated_histogram[1].at<int>(i))/(accumulated_histogram[1].at<int>(nbins-1));
-  	equalization_function[2].at<int>(i) = levels*(accumulated_histogram[2].at<int>(i))/(accumulated_histogram[2].at<int>(nbins-1));
-  }
-
-  for(int i=0; i<src.rows; i++){
-  	for(int j=0; j<src.cols; j++){
-  	  planes[0].at<uchar>(i, j) = equalization_function[0].at<int>(std::floor(planes[0].at<uchar>(i, j)/4));
-  	  planes[1].at<uchar>(i, j) = equalization_function[1].at<int>(std::floor(planes[1].at<uchar>(i, j)/4));
-  	  planes[2].at<uchar>(i, j) = equalization_function[2].at<int>(std::floor(planes[2].at<uchar>(i, j)/4));
-  	}
-  }
-
-  // Finally, once the planes are all equalized, I merge them back into the original image.
-  
-  cv::merge(planes, src);
+  std::cout << " The max value of the histogram is: " << hist_max << std::endl;
 }
 
 int main(int argc, char** argv)
@@ -87,11 +45,13 @@ int main(int argc, char** argv)
   cv::Mat histR_plus, histG_plus, histB_plus;
   cv::Mat hist_diff;
   int nbins = 64;
+  int key;
   float range[] = {0, 255};
   const float *histrange = { range };
+  double hist_min = 0;
+  double hist_max = 0;
   bool uniform = true;
   bool accumulate = false;
-  int key;
 
   cap.open(0);
 
@@ -118,30 +78,9 @@ int main(int argc, char** argv)
 
   while(1){
     cap >> image_t;
-
-    cv::imshow("Original image", image_t);
-
-	cv::split (image_t, planes);
-	cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB, 1,
-				 &nbins, &histrange,
-				 uniform, accumulate);
-	//cv::calcHist(&planes[1], 1, 0, cv::Mat(), histG, 1,
-	//			 &nbins, &histrange,
-	//			 uniform, accumulate);
-	//cv::calcHist(&planes[2], 1, 0, cv::Mat(), histR, 1,
-	//			 &nbins, &histrange,
-	//			 uniform, accumulate);
-
 	cap >> image_t_plus;
 
-	cv::split (image_t_plus, planes);
-	cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB_plus, 1,
-				 &nbins, &histrange,
-				 uniform, accumulate);
-	
-	cv::absdiff(histB_plus, histB, hist_diff);
-
-	equalizeHistogram(image_t, planes, histR, histG, histB, nbins, histrange);
+		equalizeHistogram(image_t, planes, histR, histG, histB, nbins, histrange);
 
     cv::normalize(histR, histR, 0, histImgR.rows, cv::NORM_MINMAX, -1, cv::Mat());
     cv::normalize(histG, histG, 0, histImgG.rows, cv::NORM_MINMAX, -1, cv::Mat());
@@ -168,7 +107,7 @@ int main(int argc, char** argv)
     histImgR.copyTo(image_t(cv::Rect(0, 0       ,nbins, histh)));
     histImgG.copyTo(image_t(cv::Rect(0, histh   ,nbins, histh)));
     histImgB.copyTo(image_t(cv::Rect(0, 2*histh ,nbins, histh)));
-    cv::imshow("Equalized image", image_t);
+    cv::imshow("Image", image_t_plus);
     key = cv::waitKey(30);
     if(key == 27) break;
   }
