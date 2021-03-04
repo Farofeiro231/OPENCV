@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------------------//
-// Author: Emanoel de Sousa Costa.															//
-// This code takes a black-and-white image as the input, calculates its histogram and		//
-// performs an histogram equalization on the original image. The output is shown on screen. //
+// Author: Emanoel de Sousa Costa.															
+// This is a motion detection program. It works based on the difference between the current
+// image's histogram and the one from the previous image.
 //------------------------------------------------------------------------------------------//
 
 #include <cmath>
@@ -15,7 +15,6 @@
 
 void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB, int nbins, const float *histrange)
 {
-  
   const int levels = 255;
   cv::split (src, planes);
 
@@ -73,21 +72,25 @@ void equalizeHistogram(cv::Mat &src, std::vector<cv::Mat> &planes, cv::Mat &hist
   }
 
   // Finally, once the planes are all equalized, I merge them back into the original image.
+  
   cv::merge(planes, src);
 }
 
 int main(int argc, char** argv)
 {
-  cv::Mat image;
+  cv::Mat image_t;
+  cv::Mat image_t_plus;
   int width, height;
   cv::VideoCapture cap;
   std::vector<cv::Mat> planes;
   cv::Mat histR, histG, histB;
+  cv::Mat histR_plus, histG_plus, histB_plus;
+  cv::Mat hist_diff;
   int nbins = 64;
   float range[] = {0, 255};
   const float *histrange = { range };
   bool uniform = true;
-  bool acummulate = false;
+  bool accumulate = false;
   int key;
 
   cap.open(0);
@@ -114,11 +117,31 @@ int main(int argc, char** argv)
   cv::Mat histImgB(histh, histw, CV_8UC3, cv::Scalar(0,0,0));
 
   while(1){
-    cap >> image;
+    cap >> image_t;
 
-    cv::imshow("Original image", image);
+    cv::imshow("Original image", image_t);
 
-	equalizeHistogram(image, planes, histR, histG, histB, nbins, histrange);
+	cv::split (image_t, planes);
+	cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB, 1,
+				 &nbins, &histrange,
+				 uniform, accumulate);
+	//cv::calcHist(&planes[1], 1, 0, cv::Mat(), histG, 1,
+	//			 &nbins, &histrange,
+	//			 uniform, accumulate);
+	//cv::calcHist(&planes[2], 1, 0, cv::Mat(), histR, 1,
+	//			 &nbins, &histrange,
+	//			 uniform, accumulate);
+
+	cap >> image_t_plus;
+
+	cv::split (image_t_plus, planes);
+	cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB_plus, 1,
+				 &nbins, &histrange,
+				 uniform, accumulate);
+	
+	cv::absdiff(histB_plus, histB, hist_diff);
+
+	equalizeHistogram(image_t, planes, histR, histG, histB, nbins, histrange);
 
     cv::normalize(histR, histR, 0, histImgR.rows, cv::NORM_MINMAX, -1, cv::Mat());
     cv::normalize(histG, histG, 0, histImgG.rows, cv::NORM_MINMAX, -1, cv::Mat());
@@ -142,10 +165,10 @@ int main(int argc, char** argv)
                cv::Point(i, histh-cvRound(histB.at<float>(i))),
                cv::Scalar(255, 0, 0), 1, 8, 0);
     }
-    histImgR.copyTo(image(cv::Rect(0, 0       ,nbins, histh)));
-    histImgG.copyTo(image(cv::Rect(0, histh   ,nbins, histh)));
-    histImgB.copyTo(image(cv::Rect(0, 2*histh ,nbins, histh)));
-    cv::imshow("Equalized image", image);
+    histImgR.copyTo(image_t(cv::Rect(0, 0       ,nbins, histh)));
+    histImgG.copyTo(image_t(cv::Rect(0, histh   ,nbins, histh)));
+    histImgB.copyTo(image_t(cv::Rect(0, 2*histh ,nbins, histh)));
+    cv::imshow("Equalized image", image_t);
     key = cv::waitKey(30);
     if(key == 27) break;
   }
