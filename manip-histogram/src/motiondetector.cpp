@@ -36,7 +36,7 @@ bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat>
 }
 
 
-void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat &histImgB, cv::Mat histR, cv::Mat histG, cv::Mat histB) 
+void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat &histImgB, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB) 
 {
   int histw = histImgR.cols;
   int histh = histw/2;
@@ -51,6 +51,7 @@ void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat
   std::cout << "Lol" << std::endl;
 
   for(int i=0; i<histw; i++){
+	std::cout << "Testando: " << histh << std::endl;
 	cv::line(histImgR,
 			 cv::Point(i, histh),
 			 cv::Point(i, histh-cvRound(histR.at<float>(i))),
