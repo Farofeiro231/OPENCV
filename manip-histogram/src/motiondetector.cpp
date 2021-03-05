@@ -32,7 +32,41 @@ bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat>
   cv::minMaxLoc(hist_diff, &hist_min, &hist_max);
 
   std::cout << " The max value of the histogram is: " << hist_max << std::endl;
+  return true;
 }
+
+
+void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat &histImgB, cv::Mat histR, cv::Mat histG, cv::Mat histB) 
+{
+  int histw = histImgR.cols;
+  int histh = histw/2;
+  cv::normalize(histR, histR, 0, histImgR.rows, cv::NORM_MINMAX, -1, cv::Mat());
+  cv::normalize(histG, histG, 0, histImgG.rows, cv::NORM_MINMAX, -1, cv::Mat());
+  cv::normalize(histB, histB, 0, histImgB.rows, cv::NORM_MINMAX, -1, cv::Mat());
+
+  histImgR.setTo(cv::Scalar(0));
+  histImgG.setTo(cv::Scalar(0));
+  histImgB.setTo(cv::Scalar(0));
+
+  for(int i=0; i<histw; i++){
+	cv::line(histImgR,
+			 cv::Point(i, histh),
+			 cv::Point(i, histh-cvRound(histR.at<float>(i))),
+			 cv::Scalar(0, 0, 255), 1, 8, 0);
+	cv::line(histImgG,
+			 cv::Point(i, histh),
+			 cv::Point(i, histh-cvRound(histG.at<float>(i))),
+			 cv::Scalar(0, 255, 0), 1, 8, 0);
+	cv::line(histImgB,
+			 cv::Point(i, histh),
+			 cv::Point(i, histh-cvRound(histB.at<float>(i))),
+			 cv::Scalar(255, 0, 0), 1, 8, 0);
+  }
+  histImgR.copyTo(src(cv::Rect(0, 0       ,histw, histh)));
+  histImgG.copyTo(src(cv::Rect(0, histh   ,histw, histh)));
+  histImgB.copyTo(src(cv::Rect(0, 2*histh ,histw, histh)));
+}
+
 
 int main(int argc, char** argv)
 {
@@ -80,36 +114,13 @@ int main(int argc, char** argv)
     cap >> image_t;
 	cap >> image_t_plus;
 
-		equalizeHistogram(image_t, planes, histR, histG, histB, nbins, histrange);
+	detect_motion(image_t, image_t_plus, planes, histB, histB_plus, nbins, histrange);
+	draw_histograms(image_t_plus, histImgR, histImgG, histImgB, histR, histG, histB);
 
-    cv::normalize(histR, histR, 0, histImgR.rows, cv::NORM_MINMAX, -1, cv::Mat());
-    cv::normalize(histG, histG, 0, histImgG.rows, cv::NORM_MINMAX, -1, cv::Mat());
-    cv::normalize(histB, histB, 0, histImgB.rows, cv::NORM_MINMAX, -1, cv::Mat());
-
-    histImgR.setTo(cv::Scalar(0));
-    histImgG.setTo(cv::Scalar(0));
-    histImgB.setTo(cv::Scalar(0));
-
-    for(int i=0; i<nbins; i++){
-      cv::line(histImgR,
-               cv::Point(i, histh),
-               cv::Point(i, histh-cvRound(histR.at<float>(i))),
-               cv::Scalar(0, 0, 255), 1, 8, 0);
-      cv::line(histImgG,
-               cv::Point(i, histh),
-               cv::Point(i, histh-cvRound(histG.at<float>(i))),
-               cv::Scalar(0, 255, 0), 1, 8, 0);
-      cv::line(histImgB,
-               cv::Point(i, histh),
-               cv::Point(i, histh-cvRound(histB.at<float>(i))),
-               cv::Scalar(255, 0, 0), 1, 8, 0);
-    }
-    histImgR.copyTo(image_t(cv::Rect(0, 0       ,nbins, histh)));
-    histImgG.copyTo(image_t(cv::Rect(0, histh   ,nbins, histh)));
-    histImgB.copyTo(image_t(cv::Rect(0, 2*histh ,nbins, histh)));
     cv::imshow("Image", image_t_plus);
     key = cv::waitKey(30);
     if(key == 27) break;
   }
+
   return 0;
 }
