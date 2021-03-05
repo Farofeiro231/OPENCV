@@ -17,6 +17,9 @@
 bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat> &planes, cv::Mat &histB, cv::Mat &histB_plus, int nbins, const float *histrange)
 {
   double hist_min, hist_max;
+  int movement_threshold = 850;
+  int circle_radius = 20;
+  cv::Scalar circle_color = {255, 0, 0};
   cv::Point circle_center(image_t_plus.cols - 50, image_t_plus.rows - 50);
   cv::Mat hist_diff;
   cv::split (image_t, planes);
@@ -33,8 +36,8 @@ bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat>
   cv::absdiff(histB_plus, histB, hist_diff);
   cv::minMaxLoc(hist_diff, &hist_min, &hist_max);
 
-  if (hist_max > 900){
-	cv::circle(image_t_plus, circle_center, 40, cv::Scalar(0, 255, 0), -1);
+  if (hist_max > movement_threshold){
+	cv::circle(image_t_plus, circle_center, circle_radius, circle_color, -1);
   }
   return true;
 }
