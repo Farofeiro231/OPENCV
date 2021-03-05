@@ -31,7 +31,7 @@ bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat>
   cv::absdiff(histB_plus, histB, hist_diff);
   cv::minMaxLoc(hist_diff, &hist_min, &hist_max);
 
-  std::cout << " The max value of the histogram is: " << hist_max << std::endl;
+  if (hist_max > 900) std::cout << "Movement detected" << std::endl;
   return true;
 }
 
@@ -65,10 +65,7 @@ void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat
   histImgG.setTo(cv::Scalar(0));
   histImgB.setTo(cv::Scalar(0));
 
-  std::cout << "Valor de histR(0): " << histR.at<float>(0) << std::endl;
-
   for(int i=0; i<histw; i++){
-	std::cout << "Testando: " << (histR.at<float>(i)) << std::endl;
 	cv::line(histImgR,
 			 cv::Point(i, histh),
 			 cv::Point(i, histh-cvRound(histR.at<float>(i))),
