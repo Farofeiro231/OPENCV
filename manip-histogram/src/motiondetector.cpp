@@ -14,36 +14,74 @@
 #include <ostream>
 #include <vector>
 
-bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat> &planes, cv::Mat &histB, cv::Mat &histB_plus, int nbins, const float *histrange)
+cv::Mat histB, histG, histR;
+cv::Mat histB_plus, histG_plus, histR_plus;
+
+
+double histogram_diff(cv::Mat hist_t, cv::Mat hist_t_plus)
 {
-  double hist_min, hist_max;
-  int movement_threshold = 850;
-  int circle_radius = 20;
-  cv::Scalar circle_color = {255, 0, 0};
-  cv::Point circle_center(image_t_plus.cols - 50, image_t_plus.rows - 50);
   cv::Mat hist_diff;
+  double min_diff, max_diff; //min_diff is not meant to be used; I just didn't want to use a placeholder
+
+  cv::absdiff(hist_t_plus, hist_t, hist_diff);
+  cv::minMaxLoc(hist_diff, &min_diff, &max_diff);
+  return max_diff;
+}
+
+bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat> &planes, int nbins, const float *histrange)
+{
+  std::vector<double> hist_max(3, 0);
+  std::vector<int> movement_threshold = {900, 900, 900};
+  int circle_radius = 20;
+  cv::Scalar circle_color = {0, 0, 255};
+  cv::Point red_circle_center(image_t_plus.cols - 50, image_t_plus.rows - 50);
+  cv::Mat hist_diff;
+
   cv::split (image_t, planes);
   cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB, 1,
 			   &nbins, &histrange,
 			   true, false);
 
+  cv::calcHist(&planes[1], 1, 0, cv::Mat(), histG, 1,
+			   &nbins, &histrange,
+			   true, false);
+
+  cv::calcHist(&planes[2], 1, 0, cv::Mat(), histR, 1,
+			   &nbins, &histrange,
+			   true, false);
 
   cv::split (image_t_plus, planes);
   cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB_plus, 1,
 			   &nbins, &histrange,
 			   true, false);
 	
-  cv::absdiff(histB_plus, histB, hist_diff);
-  cv::minMaxLoc(hist_diff, &hist_min, &hist_max);
+  cv::calcHist(&planes[1], 1, 0, cv::Mat(), histG_plus, 1,
+			   &nbins, &histrange,
+			   true, false);
 
-  if (hist_max > movement_threshold){
-	cv::circle(image_t_plus, circle_center, circle_radius, circle_color, -1);
+  cv::calcHist(&planes[2], 1, 0, cv::Mat(), histR_plus, 1,
+			   &nbins, &histrange,
+			   true, false);
+
+  // Here I calculate the maximum and minimum histogram differences between
+  // the t and t_plus images. It is done once per color-channel.
+
+  hist_max[0] = histogram_diff(histB, histB_plus);
+  hist_max[1] = histogram_diff(histG, histG_plus);
+  hist_max[2] = histogram_diff(histR, histR_plus);
+  
+  // Here I draw the circle indicating that movement has been detected.
+  // If any of the thresholds are met, the circle is drawn on screen
+
+  if (hist_max[0] > movement_threshold[0] || hist_max[1] > movement_threshold[1] || hist_max[2] > movement_threshold[2]){
+	cv::circle(image_t_plus, red_circle_center, circle_radius, circle_color, -1);
   }
+  
   return true;
 }
 
 
-void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat &histImgB, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB, const float *histrange)
+void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat &histImgB, const float *histrange)
 {
   int histw = histImgR.cols;
   int histh = histw/2;
@@ -100,8 +138,6 @@ int main(int argc, char** argv)
   int width, height;
   cv::VideoCapture cap;
   std::vector<cv::Mat> planes;
-  cv::Mat histR, histG, histB;
-  cv::Mat histR_plus, histG_plus, histB_plus;
   cv::Mat hist_diff;
   int nbins = 64;
   int key;
@@ -124,9 +160,6 @@ int main(int argc, char** argv)
   width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
   height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
 
-  std::cout << "largura = " << width << std::endl;
-  std::cout << "altura  = " << height << std::endl;
-
   // The width of the histogram needs to match the number of bins
 
   int histw = nbins;
@@ -139,8 +172,8 @@ int main(int argc, char** argv)
     cap >> image_t;
 	cap >> image_t_plus;
 
-	detect_motion(image_t, image_t_plus, planes, histB, histB_plus, nbins, histrange);
-	draw_histograms(image_t_plus, histImgR, histImgG, histImgB, histR, histG, histB, histrange);
+	detect_motion(image_t, image_t_plus, planes, nbins, histrange);
+	draw_histograms(image_t_plus, histImgR, histImgG, histImgB, histrange);
 
     cv::imshow("Image", image_t_plus);
     key = cv::waitKey(30);
