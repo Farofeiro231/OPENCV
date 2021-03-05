@@ -48,10 +48,10 @@ void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat
   histImgG.setTo(cv::Scalar(0));
   histImgB.setTo(cv::Scalar(0));
 
-  std::cout << "Lol" << std::endl;
+  std::cout << "Valor de histR(0): " << histR.at<CV_8UC1>(0) << std::endl;
 
   for(int i=0; i<histw; i++){
-	std::cout << "Testando: " << histh << std::endl;
+	std::cout << "Testando: " << (histR.at<float>(i)) << std::endl;
 	cv::line(histImgR,
 			 cv::Point(i, histh),
 			 cv::Point(i, histh-cvRound(histR.at<float>(i))),
