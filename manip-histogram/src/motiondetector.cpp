@@ -48,6 +48,8 @@ void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat
   histImgG.setTo(cv::Scalar(0));
   histImgB.setTo(cv::Scalar(0));
 
+  std::cout << "Lol" << std::endl;
+
   for(int i=0; i<histw; i++){
 	cv::line(histImgR,
 			 cv::Point(i, histh),
@@ -62,6 +64,7 @@ void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat
 			 cv::Point(i, histh-cvRound(histB.at<float>(i))),
 			 cv::Scalar(255, 0, 0), 1, 8, 0);
   }
+  
   histImgR.copyTo(src(cv::Rect(0, 0       ,histw, histh)));
   histImgG.copyTo(src(cv::Rect(0, histh   ,histw, histh)));
   histImgB.copyTo(src(cv::Rect(0, 2*histh ,histw, histh)));
