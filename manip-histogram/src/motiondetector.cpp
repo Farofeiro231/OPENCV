@@ -31,7 +31,7 @@ double histogram_diff(cv::Mat hist_t, cv::Mat hist_t_plus)
 bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat> &planes, int nbins, const float *histrange)
 {
   std::vector<double> hist_max(3, 0);
-  std::vector<int> movement_threshold = {900, 900, 900};
+  std::vector<int> movement_threshold = {1200, 1200, 1200};
   int circle_radius = 20;
   cv::Scalar circle_color = {0, 0, 255};
   cv::Point red_circle_center(image_t_plus.cols - 50, image_t_plus.rows - 50);
