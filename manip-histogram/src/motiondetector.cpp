@@ -36,10 +36,27 @@ bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat>
 }
 
 
-void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat &histImgB, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB) 
+void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat &histImgB, cv::Mat &histR, cv::Mat &histG, cv::Mat &histB, const float *histrange)
 {
   int histw = histImgR.cols;
   int histh = histw/2;
+  std::vector<cv::Mat> planes;
+
+  cv::split (src, planes);
+  cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB, 1,
+			   &histw, &histrange,
+			   true, false);
+
+  cv::split (src, planes);
+  cv::calcHist(&planes[0], 1, 0, cv::Mat(), histG, 1,
+			   &histw, &histrange,
+			   true, false);
+
+  cv::split (src, planes);
+  cv::calcHist(&planes[0], 1, 0, cv::Mat(), histR, 1,
+			   &histw, &histrange,
+			   true, false);
+
   cv::normalize(histR, histR, 0, histImgR.rows, cv::NORM_MINMAX, -1, cv::Mat());
   cv::normalize(histG, histG, 0, histImgG.rows, cv::NORM_MINMAX, -1, cv::Mat());
   cv::normalize(histB, histB, 0, histImgB.rows, cv::NORM_MINMAX, -1, cv::Mat());
@@ -48,7 +65,7 @@ void draw_histograms(cv::Mat &src, cv::Mat &histImgR, cv::Mat &histImgG, cv::Mat
   histImgG.setTo(cv::Scalar(0));
   histImgB.setTo(cv::Scalar(0));
 
-  std::cout << "Valor de histR(0): " << histR.at<CV_8UC1>(0) << std::endl;
+  std::cout << "Valor de histR(0): " << histR.at<float>(0) << std::endl;
 
   for(int i=0; i<histw; i++){
 	std::cout << "Testando: " << (histR.at<float>(i)) << std::endl;
@@ -119,7 +136,7 @@ int main(int argc, char** argv)
 	cap >> image_t_plus;
 
 	detect_motion(image_t, image_t_plus, planes, histB, histB_plus, nbins, histrange);
-	draw_histograms(image_t_plus, histImgR, histImgG, histImgB, histR, histG, histB);
+	draw_histograms(image_t_plus, histImgR, histImgG, histImgB, histR, histG, histB, histrange);
 
     cv::imshow("Image", image_t_plus);
     key = cv::waitKey(30);
