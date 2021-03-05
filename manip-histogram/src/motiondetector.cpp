@@ -8,6 +8,7 @@
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/core/hal/interface.h>
+#include <opencv2/core/types.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <ostream>
@@ -16,6 +17,7 @@
 bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat> &planes, cv::Mat &histB, cv::Mat &histB_plus, int nbins, const float *histrange)
 {
   double hist_min, hist_max;
+  cv::Point circle_center(image_t_plus.cols - 50, image_t_plus.rows - 50);
   cv::Mat hist_diff;
   cv::split (image_t, planes);
   cv::calcHist(&planes[0], 1, 0, cv::Mat(), histB, 1,
@@ -31,7 +33,9 @@ bool detect_motion(cv::Mat &image_t, cv::Mat &image_t_plus, std::vector<cv::Mat>
   cv::absdiff(histB_plus, histB, hist_diff);
   cv::minMaxLoc(hist_diff, &hist_min, &hist_max);
 
-  if (hist_max > 900) std::cout << "Movement detected" << std::endl;
+  if (hist_max > 900){
+	cv::circle(image_t_plus, circle_center, 40, cv::Scalar(0, 255, 0), -1);
+  }
   return true;
 }
 
