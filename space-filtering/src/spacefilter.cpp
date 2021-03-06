@@ -104,9 +104,11 @@ int main(int, char **) {
         break;
       case 'b':
         mask = cv::Mat(3, 3, CV_32F, boost);
+        printmask(mask);
         break;
       case 'p':
-        mask = cv::Mat(3, 3, CV_32F, LoG);
+        mask = cv::Mat(5, 5, CV_32F, LoG);
+        printmask(mask);
         break;
       default:
         break;
