@@ -66,6 +66,15 @@ int main(int, char **) {
     cv::flip(framegray, framegray, 1);
     cv::imshow("original", framegray);
     framegray.convertTo(frame32f, CV_32F);
+    cv::filter2D(frame32f, frameFiltered, frame32f.depth(), mask,
+                 cv::Point(1, 1), 0);
+    if (absolut) {
+      frameFiltered = cv::abs(frameFiltered);
+    }
+
+    frameFiltered.convertTo(result, CV_8U);
+
+    cv::imshow("filtroespacial", result);
 
     key = (char)cv::waitKey(10);
     if (key == 27) break;  // esc pressed!
@@ -96,30 +105,14 @@ int main(int, char **) {
       case 'b':
         mask = cv::Mat(3, 3, CV_32F, boost);
         printmask(mask);
+		cv::filter2D(mask, mask, frame32f.depth(), cv::Mat(3, 3, CV_32F, media),
+				 cv::Point(1, 1), 0);
         break;
       case 'p':
         mask = cv::Mat(5, 5, CV_32F, LoG);
         printmask(mask);
-		cv::filter2D(frame32f, frameFiltered, frame32f.depth(), mask,
-					 cv::Point(1, 1), 0);
-		if (absolut) {
-		  frameFiltered = cv::abs(frameFiltered);
-		}
-
-        mask = cv::Mat(3, 3, CV_32F, media);
-        printmask(mask);
-
-		cv::filter2D(frameFiltered, frameFiltered, frame32f.depth(), mask,
-					 cv::Point(1, 1), 0);
-		if (absolut) {
-		  frameFiltered = cv::abs(frameFiltered);
-		}
-
-		frameFiltered.convertTo(result, CV_8U);
-
-		cv::imshow("filtroespacial", result);
-		break;
-	  default:
+        break;
+      default:
         break;
     }
   }
