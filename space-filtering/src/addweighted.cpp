@@ -47,14 +47,18 @@ int main(int argvc, char** argv){
   // Creation of the averaging mask and its application upon
   // the original image.
   
-  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_32F);
+  float temp;
+  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255,255,255));
+  cv::imshow("Alpha matrix", alpha_matrix);
   for (int i=0; i<image1.rows; i++){
 	for (int j=0; j<image1.cols; j++){
-	  alpha_matrix.at<float>(i, j) = 0.5*(tanh((i + 20)/5) - tanh((i - 230)/5));
+	  temp = 0.5*(tanh((i + 20)/5) - tanh((i - 30)/5)); 
+	  std::cout << std::ceil(temp*255/1) << std::endl;
+	  alpha_matrix.at<int>(i, j) = std::ceil(temp*255/1);
 	}
   }
 
-  cv::imshow("Alpha matrix", alpha_matrix);
+  //cv::imshow("Alpha matrix", alpha_matrix);
   average_filter(image1, image2);
 
   image2.copyTo(imageTop);
