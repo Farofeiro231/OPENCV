@@ -1,6 +1,9 @@
+#include <cmath>
 #include <iostream>
 #include <cstdio>
+#include <opencv2/core/hal/interface.h>
 #include <opencv2/core/types.hpp>
+#include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
@@ -32,15 +35,27 @@ void on_trackbar_line(int, void*){
   on_trackbar_blend(alfa_slider,0);
 }
 
+void average_filter(cv::Mat &src, cv::Mat &destination_img)
+{
+  cv::Mat average_mask = cv::Mat::ones(5, 5, CV_32F)*0.04;
+  cv::filter2D(src, destination_img, src.depth(), average_mask, cv::Point(1, 1), 0);
+}
+
 int main(int argvc, char** argv){
   image1 = cv::imread("./figures/blend1.jpg");
-  //image2 = cv::imread("./figures/blend2.jpg");
 
   // Creation of the averaging mask and its application upon
   // the original image.
   
-  cv::Mat average_filter = cv::Mat::ones(5, 5, CV_32F);
-  cv::filter2D(image1, image2, image1.depth(), average_filter, cv::Point(1, 1), 0);
+  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_32F);
+  for (int i=0; i<image1.rows; i++){
+	for (int j=0; j<image1.cols; j++){
+	  alpha_matrix.at<float>(i, j) = 0.5*(tanh((i + 20)/5) - tanh((i - 230)/5));
+	}
+  }
+
+  cv::imshow("Alpha matrix", alpha_matrix);
+  average_filter(image1, image2);
 
   image2.copyTo(imageTop);
   cv::namedWindow("addweighted", 1);
