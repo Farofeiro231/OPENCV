@@ -18,9 +18,17 @@ int main(int, char **) {
                    0.125,  0.0625, 0.125,  0.0625};
   float vertical[] = {-1, 0, 1, -2, 0, 2, -1, 0, 1};
   float horizontal[] = {-1, -2, -1, 0, 0, 0, 1, 2, 1};
-  float laplacian[] = {0, -1, 0, -1, 4, -1, 0, -1, 0};
-  float boost[] = {0, -1, 0, -1, 5.2, -1, 0, -1, 0};
-  float LoG[] = {1, 1, 1, 1, -4, 1, 1, 1, 1};
+  float laplacian[] = {0, -1, 0,
+					   -1, 4, -1,
+					   0, -1, 0};
+  float boost[] = {0, -1, 0,
+				   -1, 5.2, -1,
+				   0, -1, 0};
+  float LoG[] = {0, 0, 1, 0, 0,
+				 0, 1, 2, 1, 0,
+				 1, 2, -16, 2, 1,
+				 0, 1, 2, 1, 0,
+				 0, 0, 1, 0, 0};
 
   cv::Mat frame, framegray, frame32f, frameFiltered;
   cv::Mat mask(3, 3, CV_32F);
