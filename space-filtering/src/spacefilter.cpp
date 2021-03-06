@@ -12,6 +12,7 @@ void printmask(cv::Mat &m) {
 
 int main(int, char **) {
   cv::VideoCapture cap;  // open the default camera
+  cv::Mat media_5 = cv::Mat::ones(5, 5, CV_32F)*0.04;
   float media[] = {0.1111, 0.1111, 0.1111, 0.1111, 0.1111,
                    0.1111, 0.1111, 0.1111, 0.1111};
   float gauss[] = {0.0625, 0.125,  0.0625, 0.125, 0.25,
@@ -105,10 +106,10 @@ int main(int, char **) {
       case 'b':
         mask = cv::Mat(3, 3, CV_32F, boost);
         printmask(mask);
-		cv::filter2D(mask, mask, frame32f.depth(), cv::Mat(3, 3, CV_32F, media),
-				 cv::Point(1, 1), 0);
         break;
       case 'p':
+		// The performance of the LoG is further improved by filtering it
+		// with the average mask afterwards.
         mask = cv::Mat(5, 5, CV_32F, LoG);
         printmask(mask);
         break;
