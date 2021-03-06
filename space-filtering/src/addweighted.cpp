@@ -48,17 +48,17 @@ int main(int argvc, char** argv){
   // the original image.
   
   float temp;
-  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255,255,255));
+  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255,255,255));
   cv::imshow("Alpha matrix", alpha_matrix);
   for (int i=0; i<image1.rows; i++){
 	for (int j=0; j<image1.cols; j++){
-	  temp = 0.5*(tanh((i + 20)/5) - tanh((i - 30)/5)); 
+	  temp = 0.5*(tanh((i - 100)/5) - tanh((i - 150)/5)); 
 	  std::cout << std::ceil(temp*255/1) << std::endl;
-	  alpha_matrix.at<int>(i, j) = std::ceil(temp*255/1);
+	  alpha_matrix.at<uchar>(i, j) = std::ceil(temp*255/1);
 	}
   }
 
-  //cv::imshow("Alpha matrix", alpha_matrix);
+  cv::imshow("Alpha matrix", alpha_matrix);
   average_filter(image1, image2);
 
   image2.copyTo(imageTop);
