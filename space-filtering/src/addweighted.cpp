@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstdio>
+#include <opencv2/core/types.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
 double alfa;
@@ -32,7 +34,14 @@ void on_trackbar_line(int, void*){
 
 int main(int argvc, char** argv){
   image1 = cv::imread("./figures/blend1.jpg");
-  image2 = cv::imread("./figures/blend2.jpg");
+  //image2 = cv::imread("./figures/blend2.jpg");
+
+  // Creation of the averaging mask and its application upon
+  // the original image.
+  
+  cv::Mat average_filter = cv::Mat::ones(5, 5, CV_32F);
+  cv::filter2D(image1, image2, image1.depth(), average_filter, cv::Point(1, 1), 0);
+
   image2.copyTo(imageTop);
   cv::namedWindow("addweighted", 1);
 
