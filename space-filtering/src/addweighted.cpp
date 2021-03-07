@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <opencv2/core.hpp>
 #include <opencv2/core/hal/interface.h>
+#include <opencv2/core/matx.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -42,7 +43,10 @@ void modify_mask(cv::Mat &mask)
   int focus_width = width_slider*(mask.rows)/100;
   int focus_height = height_slider*(mask.rows)/100;
   float focus_intensity = 1.0*intensity_slider/100;
-  cv::Mat(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255)).copyTo(mask);
+  cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
+  cv::Vec3b upper_val = {0, 0, 0};
+  cv::Vec3b lower_val = {0, 0, 0};
+
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
@@ -58,22 +62,34 @@ void modify_mask(cv::Mat &mask)
 
   for (int i=0; i<mask.rows; i++)
 	{
-	  uint8_t* p = mask.ptr(i);
+	  //uint8_t* p = mask.ptr(i);
 
-	  if (i < std::max(focus_height - focus_width/2, 0)) 
-		upper_increment = upper_increment + upper_step;
+	  if (i < std::max(focus_height - focus_width/2, 0))
+		{
+		  upper_increment = upper_increment + upper_step;
+		  upper_val[0] += upper_increment;
+		  upper_val[1] += upper_increment;
+		  upper_val[2] += upper_increment;
+		}
 	  if (i >= std::min(focus_height + focus_width/2, 255))
-		lower_increment = lower_increment - lower_step;
+		{
+		  lower_increment = lower_increment - lower_step;
+		  lower_val[0] += lower_increment;
+		  lower_val[1] += lower_increment;
+		  lower_val[2] += lower_increment;
+		}
 
 	  for (int j=0; j<mask.cols; j++)
 		{
 		  if (i < std::max(focus_height - focus_width/2, 0))
 			{
-			  *p++ = std::min(upper_increment, 255);
+			  //*p++ = upper_val[0] > 255 ? upper_val : cv::Vec3b(255, 255, 255);//std::min(upper_val, 255);
+			  mask.at<cv::Vec3b>(i, j) = upper_val[0] < 255 ? upper_val : cv::Vec3b(255, 255, 255);
 			}
 		  else if (i >= std::min(focus_height + focus_width/2, 255))
 			{
-			  *p++ = std::max(lower_increment, 0);
+			  mask.at<cv::Vec3b>(i, j) = lower_val[0] > 0 ? lower_val : cv::Vec3b(0, 0, 0);
+			  //*p++ = std::max(lower_increment, 0);
 			}
 		}
 	}
@@ -114,7 +130,7 @@ void average_filter(cv::Mat &src, cv::Mat &destination_img)
 
 int main(int argvc, char** argv){
   image1 = cv::imread("./figures/blend1.jpg");
-  mask = cv::Mat(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
+  mask = cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
 
   // Creation of the averaging mask and its application upon
   // the original image.
