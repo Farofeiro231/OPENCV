@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bits/stdint-uintn.h>
 #include <cmath>
 #include <cstdint>
@@ -52,30 +53,36 @@ int main(int argvc, char** argv){
   // the original image.
   
   int upper_increment = 0;
-  int lower_increment = 0;
-  int unfocus_width = 40;
-  int unfocus_intensity = 100;
+  int lower_increment = 255;
+  int unfocus_width = 100;
+  int unfocus_intensity = 50;
+  int offset = 0;
   cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
   std::cout << "Image1.cols: " << image1.cols << std::endl;
   std::cout << "alpha_matrix.cols: " << alpha_matrix.cols << std::endl;
   int _stride = alpha_matrix.step;
   std::uint8_t *matrix_data = alpha_matrix.data;
   cv::imshow("Alpha matrix original", alpha_matrix);
+  // This offset variable is used to compensate the bigger black region at
+  // the bottom of the mask created if the user picks too small a intensity for
+  // the given unfocus_widht.
+  offset = std::max(image1.rows - unfocus_width, 0);
   for (int i=0; i<image1.rows; i++){
 	uint8_t* p = alpha_matrix.ptr(i);
 	// Add 1 step to the increments given the value of i
 	// meets the correct conditions.
-	if (i < unfocus_width)
+	if (i + offset < unfocus_width)
 	  upper_increment = upper_increment + floor(255.0/unfocus_intensity);
 	if(i >= (alpha_matrix.rows - unfocus_width))
-	  lower_increment = lower_increment + floor(255.0/unfocus_intensity);
+	  lower_increment = lower_increment - floor(255.0/unfocus_intensity);
 	for (int j=0; j<image1.cols; j++){
-	  std::cout << "(i, j): " << i << ", " << j << std::endl;
 	  if(i < unfocus_width) {
-		*p++ = upper_increment;
+		*p++ = std::min(upper_increment, 255);
+		std::cout << "(i, j): " << i << ", " << j << std::endl;
 	  }
 	  else if(i >= (alpha_matrix.rows - unfocus_width)){
-		*p++ = lower_increment;
+		*p++ = std::max(lower_increment, 0);
+		std::cout << "(i, j): " << i << ", " << j << std::endl;
 	  }
 	}
   }
