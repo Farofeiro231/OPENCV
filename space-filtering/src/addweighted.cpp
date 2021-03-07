@@ -145,6 +145,20 @@ int main(int argvc, char** argv){
                       trackbar_height_control);
   trackbar_height_control(height_slider, 0);
 
+  std::sprintf( TrackbarName, "Width x %d", width_slider_max );
+  cv::createTrackbar( TrackbarName, "Mask",
+                      &width_slider,
+                      width_slider_max,
+                      trackbar_height_control);
+  trackbar_height_control(width_slider, 0);
+
+  std::sprintf( TrackbarName, "Intensity x %d", intensity_slider_max );
+  cv::createTrackbar( TrackbarName, "Mask",
+                      &intensity_slider,
+                      intensity_slider_max,
+                      trackbar_height_control);
+  trackbar_height_control(intensity_slider, 0);
+
   cv::waitKey(0);
   return 0;
 }
