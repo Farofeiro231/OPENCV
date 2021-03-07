@@ -1,4 +1,6 @@
+#include <bits/stdint-uintn.h>
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <cstdio>
 #include <opencv2/core/hal/interface.h>
@@ -49,23 +51,28 @@ int main(int argvc, char** argv){
   // Creation of the averaging mask and its application upon
   // the original image.
   
-  float upper_increment = 0;
-  float lower_increment = 0;
+  int upper_increment = 0;
+  int lower_increment = 0;
   int unfocus_width = 40;
   int unfocus_intensity = 100;
-  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_32F);//CV_8UC1, cv::Scalar(255,255,255));
-  cv::imshow("Alpha matrix", alpha_matrix);
+  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC1);//CV_8UC1, cv::Scalar(255,255,255));
+  int _stride = alpha_matrix.step;
+  std::uint8_t *matrix_data = alpha_matrix.data;
+  cv::imshow("Alpha matrix original", alpha_matrix);
   for (int i=0; i<image1.rows; i++){
 	for (int j=0; j<image1.cols; j++){
 	  if(i < unfocus_width) {
-		std::cout << "Original value at (i, j): " << alpha_matrix.at<float>(i,j) << std::endl;
-		alpha_matrix.at<float>(i, j) = upper_increment;
+		std::cout << "Original value at (i, j): " << matrix_data[i * _stride + j] << std::endl;
+		uint8_t val = matrix_data[i * _stride + j];
+		val = upper_increment;
+		//alpha_matrix.at<uchar>(i, j) = upper_increment;
 		std::cout << "Replaced value at (i, j): " << upper_increment << std::endl;
-		upper_increment = upper_increment + 1.0/unfocus_intensity;
+		upper_increment = upper_increment + floor(255.0/unfocus_intensity);
 	  }
-	  else if(i >= alpha_matrix.rows - unfocus_width){
-		alpha_matrix.at<float>(i, j) = lower_increment;
-		lower_increment = lower_increment + 1.0/unfocus_intensity;
+	  else if(i >= (alpha_matrix.rows - unfocus_width)){
+		uint8_t val = matrix_data[i * _stride + j];
+		val = lower_increment;
+		lower_increment = lower_increment + floor(255.0/unfocus_intensity);
 	  }
 	}
   }
