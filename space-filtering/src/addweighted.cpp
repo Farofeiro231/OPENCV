@@ -24,8 +24,8 @@ int height_slider_max = 100;
 int width_slider = 30;
 int width_slider_max = 100;
 
-int intensity_slider = 1.0;
-int intensity_slider_max = 2.0;
+int intensity_slider = 100;
+int intensity_slider_max = 200;
 
 cv::Mat image1, image2, blended, mask;
 cv::Mat imageTop;
@@ -40,7 +40,7 @@ void modify_mask(cv::Mat &mask)
   int lower_step = 0;
   int focus_width = width_slider;
   int focus_height = height_slider*(mask.rows)/100;
-  float focus_intensity = intensity_slider;
+  float focus_intensity = 1.0*intensity_slider/intensity_slider_max;
   cv::Mat(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255)).copyTo(mask);//CV_8UC1, cv::Scalar(255,255,255));
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
