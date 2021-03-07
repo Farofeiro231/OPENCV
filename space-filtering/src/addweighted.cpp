@@ -58,14 +58,22 @@ void modify_mask(cv::Mat &mask)
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
   // as a transition zone above and below it.
 
+  int k = 0;
   for (int i=0; i<mask.rows; i++)
 	{
+	  k = 0;
+	  // The loop actually goes 3 times through i = n, because the image
+	  // has 3 color channels; hence, I need to reset the increment value each time,
+	  // otherwise it will show stripes on screen due to the resetting of the uchar
+	  // value inside the image.
+	  upper_increment = 0;
+	  lower_increment = 255;
 	  if (i < std::max(focus_height - focus_width/2, 0))
 		{
 		  upper_increment = upper_increment + upper_step;
-		  upper_val[0] += upper_increment;
-		  upper_val[1] += upper_increment;
-		  upper_val[2] += upper_increment;
+		  upper_val[0] += std::min(upper_increment, 255);
+		  upper_val[1] += std::min(upper_increment, 255);
+		  upper_val[2] += std::min(upper_increment, 255);
 		}
 	  if (i >= std::min(focus_height + focus_width/2, 255))
 		{
@@ -77,9 +85,25 @@ void modify_mask(cv::Mat &mask)
 
 	  for (int j=0; j<mask.cols; j++)
 		{
+		  if (i==0)
+			std::cout << "K: " << k << std::endl;
+		  k++;
 		  if (i < std::max(focus_height - focus_width/2, 0))
 			{
-			  mask.at<cv::Vec3b>(i, j) = upper_val[0] < 255 ? upper_val : cv::Vec3b(128, 128, 128);
+			  std::cout << "upper_val: " << upper_val[0] << std::endl;
+			  if (upper_val[0] <= 255)
+				{
+				  mask.at<cv::Vec3b>(i, j)[0] = upper_val[0];
+				  mask.at<cv::Vec3b>(i, j)[1] = upper_val[1];
+				  mask.at<cv::Vec3b>(i, j)[2] = upper_val[2];
+				}
+			  else
+				{
+				  mask.at<cv::Vec3b>(i, j)[0] = 255;
+				  mask.at<cv::Vec3b>(i, j)[1] = 255;
+				  mask.at<cv::Vec3b>(i, j)[2] = 255;
+				}
+			  //mask.at<cv::Vec3b>(i, j) = upper_val[0] < 255 ? upper_val : cv::Vec3b(255, 255, 255);
 			}
 		  else if (i >= std::min(focus_height + focus_width/2, 255))
 			{
