@@ -55,24 +55,27 @@ int main(int argvc, char** argv){
   int lower_increment = 0;
   int unfocus_width = 40;
   int unfocus_intensity = 100;
-  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC1);//CV_8UC1, cv::Scalar(255,255,255));
+  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
+  std::cout << "Image1.cols: " << image1.cols << std::endl;
+  std::cout << "alpha_matrix.cols: " << alpha_matrix.cols << std::endl;
   int _stride = alpha_matrix.step;
   std::uint8_t *matrix_data = alpha_matrix.data;
   cv::imshow("Alpha matrix original", alpha_matrix);
   for (int i=0; i<image1.rows; i++){
+	uint8_t* p = alpha_matrix.ptr(i);
+	// Add 1 step to the increments given the value of i
+	// meets the correct conditions.
+	if (i < unfocus_width)
+	  upper_increment = upper_increment + floor(255.0/unfocus_intensity);
+	if(i >= (alpha_matrix.rows - unfocus_width))
+	  lower_increment = lower_increment + floor(255.0/unfocus_intensity);
 	for (int j=0; j<image1.cols; j++){
+	  std::cout << "(i, j): " << i << ", " << j << std::endl;
 	  if(i < unfocus_width) {
-		std::cout << "Original value at (i, j): " << matrix_data[i * _stride + j] << std::endl;
-		uint8_t val = matrix_data[i * _stride + j];
-		val = upper_increment;
-		//alpha_matrix.at<uchar>(i, j) = upper_increment;
-		std::cout << "Replaced value at (i, j): " << upper_increment << std::endl;
-		upper_increment = upper_increment + floor(255.0/unfocus_intensity);
+		*p++ = upper_increment;
 	  }
 	  else if(i >= (alpha_matrix.rows - unfocus_width)){
-		uint8_t val = matrix_data[i * _stride + j];
-		val = lower_increment;
-		lower_increment = lower_increment + floor(255.0/unfocus_intensity);
+		*p++ = lower_increment;
 	  }
 	}
   }
