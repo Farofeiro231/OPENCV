@@ -5,6 +5,7 @@
 #include <functional>
 #include <iostream>
 #include <cstdio>
+#include <opencv2/core.hpp>
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
@@ -41,7 +42,7 @@ void modify_mask(cv::Mat &mask)
   int focus_width = width_slider*(mask.rows)/100;
   int focus_height = height_slider*(mask.rows)/100;
   float focus_intensity = 1.0*intensity_slider/100;
-  cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);//CV_8UC1, cv::Scalar(255,255,255));
+  cv::Mat(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255)).copyTo(mask);
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
@@ -94,10 +95,12 @@ void on_trackbar_line(int, void*){
   on_trackbar_blend(alfa_slider,0);
 }
 
-void trackbar_height_control(int, void*)
+void mask_control(int, void*)
 {
   modify_mask(mask);
   cv::imshow("Mask", mask);
+  cv::multiply(image1, mask, blended);
+  cv::imshow("addweighted", blended);
 }
 
 
@@ -140,22 +143,22 @@ int main(int argvc, char** argv){
   cv::createTrackbar( TrackbarName, "Mask",
                       &height_slider,
                       height_slider_max,
-                      trackbar_height_control);
-  trackbar_height_control(height_slider, 0);
+                      mask_control);
+  mask_control(height_slider, 0);
 
   std::sprintf( TrackbarName, "Width x %d", width_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
                       &width_slider,
                       width_slider_max,
-                      trackbar_height_control);
-  trackbar_height_control(width_slider, 0);
+                      mask_control);
+  mask_control(width_slider, 0);
 
   std::sprintf( TrackbarName, "Intensity x %d", intensity_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
                       &intensity_slider,
                       intensity_slider_max,
-                      trackbar_height_control);
-  trackbar_height_control(intensity_slider, 0);
+                      mask_control);
+  mask_control(intensity_slider, 0);
 
   cv::waitKey(0);
   return 0;
