@@ -18,10 +18,10 @@ int alfa_slider_max = 100;
 int top_slider = 0;
 int top_slider_max = 100;
 
-int height_slider = 0;
+int height_slider = 50;
 int height_slider_max = 100;
 
-int width_slider = 10;
+int width_slider = 30;
 int width_slider_max = 100;
 
 int intensity_slider = 1.0;
@@ -41,12 +41,12 @@ void modify_mask(cv::Mat &mask)
   int focus_width = width_slider;
   int focus_height = height_slider*(mask.rows)/100;
   float focus_intensity = intensity_slider;
+  cv::Mat(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255)).copyTo(mask);//CV_8UC1, cv::Scalar(255,255,255));
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
 
   std::uint8_t *matrix_data = mask.data;
-  cv::imshow("Alpha matrix original", mask);
 
   upper_step = floor((255.0/(focus_height - focus_width/2.0))*focus_intensity);
   lower_step = floor((255.0/(mask.rows - (focus_height + focus_width/2.0)))*focus_intensity);
@@ -78,7 +78,6 @@ void modify_mask(cv::Mat &mask)
 			}
 		}
 	}
-  cv::imshow("Mask matrix", mask);
 }
 
 void on_trackbar_blend(int, void*){
@@ -139,7 +138,7 @@ int main(int argvc, char** argv){
                       on_trackbar_line );
   on_trackbar_line(top_slider, 0 );
 
-  std::sprintf( TrackbarName, "Focus Window Height x %d", height_slider_max );
+  std::sprintf( TrackbarName, "Height x %d", height_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
                       &height_slider,
                       height_slider_max,
