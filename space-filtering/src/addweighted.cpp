@@ -2,6 +2,7 @@
 #include <bits/stdint-uintn.h>
 #include <cmath>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <cstdio>
 #include <opencv2/core/hal/interface.h>
@@ -17,10 +18,68 @@ int alfa_slider_max = 100;
 int top_slider = 0;
 int top_slider_max = 100;
 
-cv::Mat image1, image2, blended;
+int height_slider = 0;
+int height_slider_max = 100;
+
+int width_slider = 10;
+int width_slider_max = 100;
+
+int intensity_slider = 1.0;
+int intensity_slider_max = 2.0;
+
+cv::Mat image1, image2, blended, mask;
 cv::Mat imageTop;
 
 char TrackbarName[50];
+
+void modify_mask(cv::Mat &mask)
+{
+  int upper_increment = 0;
+  int lower_increment = 255;
+  int upper_step = 0;
+  int lower_step = 0;
+  int focus_width = width_slider;
+  int focus_height = height_slider*(mask.rows)/100;
+  float focus_intensity = intensity_slider;
+
+  // I used the matrix_data approach because I wanted to see if there was a noticeable difference
+  // in speed by using that (in contrast with the at<> method).
+
+  std::uint8_t *matrix_data = mask.data;
+  cv::imshow("Alpha matrix original", mask);
+
+  upper_step = floor((255.0/(focus_height - focus_width/2.0))*focus_intensity);
+  lower_step = floor((255.0/(mask.rows - (focus_height + focus_width/2.0)))*focus_intensity);
+
+  // The focus region has the following characterístics: it's centered around the focus_height and it has
+  // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
+  // as a transition zone above and below it.
+
+  for (int i=0; i<mask.rows; i++)
+	{
+	  uint8_t* p = mask.ptr(i);
+
+	  if (i < std::max(focus_height - focus_width/2, 0)) 
+		upper_increment = upper_increment + upper_step;
+	  if (i >= std::min(focus_height + focus_width/2, 255))
+		lower_increment = lower_increment - lower_step;
+
+	  for (int j=0; j<mask.cols; j++)
+		{
+		  if (i < std::max(focus_height - focus_width/2, 0))
+			{
+			  *p++ = std::min(upper_increment, 255);
+			  std::cout << "(i, j): " << i << ", " << j << std::endl;
+			}
+		  else if (i >= std::min(focus_height + focus_width/2, 255))
+			{
+			  *p++ = std::max(lower_increment, 0);
+			  std::cout << "(i, j): " << i << ", " << j << std::endl;
+			}
+		}
+	}
+  cv::imshow("Mask matrix", mask);
+}
 
 void on_trackbar_blend(int, void*){
  alfa = (double) alfa_slider/alfa_slider_max ;
@@ -38,6 +97,13 @@ void on_trackbar_line(int, void*){
   on_trackbar_blend(alfa_slider,0);
 }
 
+void trackbar_height_control(int, void*)
+{
+  modify_mask(mask);
+  cv::imshow("Mask", mask);
+}
+
+
 
 void average_filter(cv::Mat &src, cv::Mat &destination_img)
 {
@@ -48,55 +114,16 @@ void average_filter(cv::Mat &src, cv::Mat &destination_img)
 
 int main(int argvc, char** argv){
   image1 = cv::imread("./figures/blend1.jpg");
+  mask = cv::Mat(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
 
   // Creation of the averaging mask and its application upon
   // the original image.
   
-  int upper_increment = 0;
-  int lower_increment = 255;
-  int focus_width = 50;
-  int focus_height = 100;
-  int focus_intensity = 100;
-  cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
-  std::cout << "Image1.cols: " << image1.cols << std::endl;
-  std::cout << "alpha_matrix.cols: " << alpha_matrix.cols << std::endl;
-  int _stride = alpha_matrix.step;
-  std::uint8_t *matrix_data = alpha_matrix.data;
-  cv::imshow("Alpha matrix original", alpha_matrix);
-
-
-  // The focus region has the following characterístics: it's centered around the focus_height and it has
-  // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
-  // as a transition zone above and below it.
-  for (int i=0; i<image1.rows; i++)
-	{
-	  uint8_t* p = alpha_matrix.ptr(i);
-	  
-	  if (i < std::max(focus_height - focus_width/2, 0)) 
-		  upper_increment = upper_increment + floor(255.0/focus_intensity);
-	  if (i >= std::min(focus_height + focus_width/2, 255))
-		  lower_increment = lower_increment - floor(255.0/focus_intensity);
-
-	  for (int j=0; j<image1.cols; j++)
-		{
-		  if (i < std::max(focus_height - focus_width/2, 0))
-			{
-			  *p++ = std::min(upper_increment, 255);
-			  std::cout << "(i, j): " << i << ", " << j << std::endl;
-			}
-		  else if (i >= std::min(focus_height + focus_width/2, 255))
-			{
-			  *p++ = std::max(lower_increment, 0);
-			  std::cout << "(i, j): " << i << ", " << j << std::endl;
-			}
-		}
-	}
-
-  cv::imshow("Alpha matrix", alpha_matrix);
   average_filter(image1, image2);
 
   image2.copyTo(imageTop);
   cv::namedWindow("addweighted", 1);
+  cv::namedWindow("Mask", 1);
 
   std::sprintf( TrackbarName, "Alpha x %d", alfa_slider_max );
   cv::createTrackbar( TrackbarName, "addweighted",
@@ -111,6 +138,13 @@ int main(int argvc, char** argv){
                       top_slider_max,
                       on_trackbar_line );
   on_trackbar_line(top_slider, 0 );
+
+  std::sprintf( TrackbarName, "Focus Window Height x %d", height_slider_max );
+  cv::createTrackbar( TrackbarName, "Mask",
+                      &height_slider,
+                      height_slider_max,
+                      trackbar_height_control);
+  trackbar_height_control(height_slider, 0);
 
   cv::waitKey(0);
   return 0;
