@@ -54,10 +54,9 @@ int main(int argvc, char** argv){
   
   int upper_increment = 0;
   int lower_increment = 255;
-  int unfocus_width = 100;
-  int unfocus_height = 100;
-  int unfocus_intensity = 50;
-  int offset = 0;
+  int focus_width = 50;
+  int focus_height = 100;
+  int focus_intensity = 100;
   cv::Mat alpha_matrix(image1.rows, image1.cols, CV_8UC1, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
   std::cout << "Image1.cols: " << image1.cols << std::endl;
   std::cout << "alpha_matrix.cols: " << alpha_matrix.cols << std::endl;
@@ -65,30 +64,33 @@ int main(int argvc, char** argv){
   std::uint8_t *matrix_data = alpha_matrix.data;
   cv::imshow("Alpha matrix original", alpha_matrix);
 
-  // This offset variable is used to compensate the bigger black region at
-  // the bottom of the mask created if the user picks too small a intensity for
-  // the given unfocus_widht.
 
-  offset = std::max(image1.rows - unfocus_width - unfocus_intensity, 0)/2;
-  for (int i=0; i<image1.rows; i++){
-	uint8_t* p = alpha_matrix.ptr(i);
-	// Add 1 step to the increments given the value of i
-	// meets the correct conditions.
-	if (i + offset < unfocus_width)
-	  upper_increment = upper_increment + floor(255.0/unfocus_intensity);
-	if (i >= (alpha_matrix.rows - unfocus_width))
-	  lower_increment = lower_increment - floor(255.0/unfocus_intensity);
-	for (int j=0; j<image1.cols; j++){
-	  if(i < std::min(unfocus_height - unfocus_width/2, 0)) {
-		*p++ = std::min(upper_increment, 255);
-		std::cout << "(i, j): " << i << ", " << j << std::endl;
-	  }
-	  else if (i >= std::max(unfocus_height + unfocus_width/2, 255)) {
-		*p++ = std::max(lower_increment, 0);
-		std::cout << "(i, j): " << i << ", " << j << std::endl;
-	  }
+  // The focus region has the following characterístics: it's centered around the focus_height and it has
+  // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
+  // as a transition zone above and below it.
+  for (int i=0; i<image1.rows; i++)
+	{
+	  uint8_t* p = alpha_matrix.ptr(i);
+	  
+	  if (i < std::max(focus_height - focus_width/2, 0)) 
+		  upper_increment = upper_increment + floor(255.0/focus_intensity);
+	  if (i >= std::min(focus_height + focus_width/2, 255))
+		  lower_increment = lower_increment - floor(255.0/focus_intensity);
+
+	  for (int j=0; j<image1.cols; j++)
+		{
+		  if (i < std::max(focus_height - focus_width/2, 0))
+			{
+			  *p++ = std::min(upper_increment, 255);
+			  std::cout << "(i, j): " << i << ", " << j << std::endl;
+			}
+		  else if (i >= std::min(focus_height + focus_width/2, 255))
+			{
+			  *p++ = std::max(lower_increment, 0);
+			  std::cout << "(i, j): " << i << ", " << j << std::endl;
+			}
+		}
 	}
-  }
 
   cv::imshow("Alpha matrix", alpha_matrix);
   average_filter(image1, image2);
