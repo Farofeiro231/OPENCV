@@ -45,16 +45,14 @@ void modify_mask(cv::Mat &mask)
   float focus_intensity = 1.0*intensity_slider/100;
   cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
   cv::Vec3b upper_val = {0, 0, 0};
-  cv::Vec3b lower_val = {0, 0, 0};
-
+  cv::Vec3b lower_val = {255, 255, 255};
+  cv::imshow("Mask original", mask);
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
 
-  std::uint8_t *matrix_data = mask.data;
-
-  upper_step = floor(255.0/(focus_height - focus_width/2.0))*focus_intensity;
-  lower_step = floor(255.0/(mask.rows - (focus_height + focus_width/2.0)))*focus_intensity;
+  upper_step =  floor(255.0/(focus_height - focus_width/2.0))*focus_intensity;
+  lower_step =  floor(255.0/(mask.rows - (focus_height + focus_width/2.0))*focus_intensity);
 
   // The focus region has the following characterístics: it's centered around the focus_height and it has
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
@@ -62,8 +60,6 @@ void modify_mask(cv::Mat &mask)
 
   for (int i=0; i<mask.rows; i++)
 	{
-	  //uint8_t* p = mask.ptr(i);
-
 	  if (i < std::max(focus_height - focus_width/2, 0))
 		{
 		  upper_increment = upper_increment + upper_step;
@@ -74,22 +70,20 @@ void modify_mask(cv::Mat &mask)
 	  if (i >= std::min(focus_height + focus_width/2, 255))
 		{
 		  lower_increment = lower_increment - lower_step;
-		  lower_val[0] += lower_increment;
-		  lower_val[1] += lower_increment;
-		  lower_val[2] += lower_increment;
+		  lower_val[0] = lower_val[0] + lower_increment;
+		  lower_val[1] = lower_val[1] + lower_increment;
+		  lower_val[2] = lower_val[2] + lower_increment;
 		}
 
 	  for (int j=0; j<mask.cols; j++)
 		{
 		  if (i < std::max(focus_height - focus_width/2, 0))
 			{
-			  //*p++ = upper_val[0] > 255 ? upper_val : cv::Vec3b(255, 255, 255);//std::min(upper_val, 255);
-			  mask.at<cv::Vec3b>(i, j) = upper_val[0] < 255 ? upper_val : cv::Vec3b(255, 255, 255);
+			  mask.at<cv::Vec3b>(i, j) = upper_val[0] < 255 ? upper_val : cv::Vec3b(128, 128, 128);
 			}
 		  else if (i >= std::min(focus_height + focus_width/2, 255))
 			{
 			  mask.at<cv::Vec3b>(i, j) = lower_val[0] > 0 ? lower_val : cv::Vec3b(0, 0, 0);
-			  //*p++ = std::max(lower_increment, 0);
 			}
 		}
 	}
