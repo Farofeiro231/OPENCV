@@ -44,8 +44,8 @@ void modify_mask(cv::Mat &mask)
   int focus_height = height_slider*(mask.rows)/100;
   float focus_intensity = 1.0*intensity_slider/100;
   cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
-  cv::Vec3b upper_val = {0, 0, 0};
-  cv::Vec3b lower_val = {255, 255, 255};
+  std::vector<int> upper_val = {0, 0, 0};
+  std::vector<int> lower_val = {255, 255, 255};
   cv::imshow("Mask original", mask);
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
@@ -107,7 +107,19 @@ void modify_mask(cv::Mat &mask)
 			}
 		  else if (i >= std::min(focus_height + focus_width/2, 255))
 			{
-			  mask.at<cv::Vec3b>(i, j) = lower_val[0] > 0 ? lower_val : cv::Vec3b(0, 0, 0);
+			  if (lower_val[0] >= 0)
+				{
+				  mask.at<cv::Vec3b>(i, j)[0] = lower_val[0];
+				  mask.at<cv::Vec3b>(i, j)[1] = lower_val[1];
+				  mask.at<cv::Vec3b>(i, j)[2] = lower_val[2];
+				}
+			  else
+				{
+				  mask.at<cv::Vec3b>(i, j)[0] = 255;
+				  mask.at<cv::Vec3b>(i, j)[1] = 255;
+				  mask.at<cv::Vec3b>(i, j)[2] = 255;
+				}
+			  //mask.at<cv::Vec3b>(i, j) = lower_val[0] > 0 ? lower_val : cv::Vec3b(0, 0, 0);
 			}
 		}
 	}
