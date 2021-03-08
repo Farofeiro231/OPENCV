@@ -52,7 +52,7 @@ void modify_mask(cv::Mat &mask)
   // in speed by using that (in contrast with the at<> method).
 
   upper_step =  floor(255.0/(focus_height - focus_width/2.0))*focus_intensity;
-  lower_step =  floor(255.0/(mask.rows - (focus_height + focus_width/2.0))*focus_intensity);
+  lower_step =  floor(255.0/(mask.rows - (focus_height + focus_width/2.0)))*focus_intensity;
 
   // The focus region has the following characterístics: it's centered around the focus_height and it has
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
@@ -70,17 +70,17 @@ void modify_mask(cv::Mat &mask)
 	  lower_increment = 255;
 	  if (i < std::max(focus_height - focus_width/2, 0))
 		{
-		  upper_increment = upper_increment + upper_step;
-		  upper_val[0] += std::min(upper_increment, 255);
-		  upper_val[1] += std::min(upper_increment, 255);
-		  upper_val[2] += std::min(upper_increment, 255);
+		  //upper_increment = upper_increment + upper_step;
+		  upper_val[0] += upper_step;//std::min(upper_step, 255);
+		  upper_val[1] += upper_step;//std::min(upper_step, 255);
+		  upper_val[2] += upper_step;//std::min(upper_step, 255);
 		}
 	  if (i >= std::min(focus_height + focus_width/2, 255))
 		{
 		  lower_increment = lower_increment - lower_step;
-		  lower_val[0] = lower_val[0] + lower_increment;
-		  lower_val[1] = lower_val[1] + lower_increment;
-		  lower_val[2] = lower_val[2] + lower_increment;
+		  lower_val[0] -= lower_step;//std::max(lower_increment, 0);
+		  lower_val[1] -= lower_step;//std::max(lower_increment, 0);
+		  lower_val[2] -= lower_step;//std::max(lower_increment, 0);
 		}
 
 	  for (int j=0; j<mask.cols; j++)
@@ -90,7 +90,6 @@ void modify_mask(cv::Mat &mask)
 		  k++;
 		  if (i < std::max(focus_height - focus_width/2, 0))
 			{
-			  std::cout << "upper_val: " << upper_val[0] << std::endl;
 			  if (upper_val[0] <= 255)
 				{
 				  mask.at<cv::Vec3b>(i, j)[0] = upper_val[0];
@@ -107,6 +106,7 @@ void modify_mask(cv::Mat &mask)
 			}
 		  else if (i >= std::min(focus_height + focus_width/2, 255))
 			{
+			  std::cout << "lower_val: " << lower_val[0] << std::endl;
 			  if (lower_val[0] >= 0)
 				{
 				  mask.at<cv::Vec3b>(i, j)[0] = lower_val[0];
@@ -115,9 +115,9 @@ void modify_mask(cv::Mat &mask)
 				}
 			  else
 				{
-				  mask.at<cv::Vec3b>(i, j)[0] = 255;
-				  mask.at<cv::Vec3b>(i, j)[1] = 255;
-				  mask.at<cv::Vec3b>(i, j)[2] = 255;
+				  mask.at<cv::Vec3b>(i, j)[0] = 0;
+				  mask.at<cv::Vec3b>(i, j)[1] = 0;
+				  mask.at<cv::Vec3b>(i, j)[2] = 0;
 				}
 			  //mask.at<cv::Vec3b>(i, j) = lower_val[0] > 0 ? lower_val : cv::Vec3b(0, 0, 0);
 			}
