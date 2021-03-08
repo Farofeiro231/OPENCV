@@ -30,7 +30,7 @@ int intensity_slider = 100;
 int intensity_slider_max = 500;
 
 cv::Mat image1, image2, blended, mask;
-cv::Mat imageTop;
+cv::Mat imageTop, imageBottom;
 
 char TrackbarName[50];
 
@@ -44,7 +44,6 @@ void modify_mask(cv::Mat &mask)
   cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
   std::vector<int> upper_val = {0, 0, 0};
   std::vector<int> lower_val = {255, 255, 255};
-  cv::imshow("Mask original", mask);
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
@@ -132,8 +131,13 @@ void mask_control(int, void*)
 {
   modify_mask(mask);
   cv::imshow("Mask", mask);
-  cv::imshow("Mask double", mask*(1.0/255));
-  blended = image1.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+  imageBottom = image1.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+
+  // When using the cv::Mat::ones method only the first channel is initialized to 1,
+  // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
+
+  imageTop = image2.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+  blended = imageTop + imageBottom;
   cv::imshow("addweighted", blended);
 }
 
