@@ -132,7 +132,8 @@ void mask_control(int, void*)
 {
   modify_mask(mask);
   cv::imshow("Mask", mask);
-  cv::multiply(image1, mask*(1.0/255), blended);
+  cv::imshow("Mask double", mask*(1.0/255));
+  blended = image1.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
   cv::imshow("addweighted", blended);
 }
 
