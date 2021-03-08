@@ -36,8 +36,6 @@ char TrackbarName[50];
 
 void modify_mask(cv::Mat &mask)
 {
-  int upper_increment = 0;
-  int lower_increment = 255;
   int upper_step = 0;
   int lower_step = 0;
   int focus_width = width_slider*(mask.rows)/100;
@@ -61,33 +59,25 @@ void modify_mask(cv::Mat &mask)
   int k = 0;
   for (int i=0; i<mask.rows; i++)
 	{
-	  k = 0;
 	  // The loop actually goes 3 times through i = n, because the image
 	  // has 3 color channels; hence, I need to reset the increment value each time,
 	  // otherwise it will show stripes on screen due to the resetting of the uchar
 	  // value inside the image.
-	  upper_increment = 0;
-	  lower_increment = 255;
 	  if (i < std::max(focus_height - focus_width/2, 0))
 		{
-		  //upper_increment = upper_increment + upper_step;
-		  upper_val[0] += upper_step;//std::min(upper_step, 255);
-		  upper_val[1] += upper_step;//std::min(upper_step, 255);
-		  upper_val[2] += upper_step;//std::min(upper_step, 255);
+		  upper_val[0] += upper_step;
+		  upper_val[1] += upper_step;
+		  upper_val[2] += upper_step;
 		}
 	  if (i >= std::min(focus_height + focus_width/2, 255))
 		{
-		  lower_increment = lower_increment - lower_step;
-		  lower_val[0] -= lower_step;//std::max(lower_increment, 0);
-		  lower_val[1] -= lower_step;//std::max(lower_increment, 0);
-		  lower_val[2] -= lower_step;//std::max(lower_increment, 0);
+		  lower_val[0] -= lower_step;
+		  lower_val[1] -= lower_step;
+		  lower_val[2] -= lower_step;
 		}
 
 	  for (int j=0; j<mask.cols; j++)
 		{
-		  if (i==0)
-			std::cout << "K: " << k << std::endl;
-		  k++;
 		  if (i < std::max(focus_height - focus_width/2, 0))
 			{
 			  if (upper_val[0] <= 255)
@@ -102,11 +92,9 @@ void modify_mask(cv::Mat &mask)
 				  mask.at<cv::Vec3b>(i, j)[1] = 255;
 				  mask.at<cv::Vec3b>(i, j)[2] = 255;
 				}
-			  //mask.at<cv::Vec3b>(i, j) = upper_val[0] < 255 ? upper_val : cv::Vec3b(255, 255, 255);
 			}
 		  else if (i >= std::min(focus_height + focus_width/2, 255))
 			{
-			  std::cout << "lower_val: " << lower_val[0] << std::endl;
 			  if (lower_val[0] >= 0)
 				{
 				  mask.at<cv::Vec3b>(i, j)[0] = lower_val[0];
@@ -119,7 +107,6 @@ void modify_mask(cv::Mat &mask)
 				  mask.at<cv::Vec3b>(i, j)[1] = 0;
 				  mask.at<cv::Vec3b>(i, j)[2] = 0;
 				}
-			  //mask.at<cv::Vec3b>(i, j) = lower_val[0] > 0 ? lower_val : cv::Vec3b(0, 0, 0);
 			}
 		}
 	}
@@ -145,7 +132,7 @@ void mask_control(int, void*)
 {
   modify_mask(mask);
   cv::imshow("Mask", mask);
-  cv::multiply(image1, mask, blended);
+  cv::multiply(image1, mask*(1.0/255), blended);
   cv::imshow("addweighted", blended);
 }
 
