@@ -177,13 +177,18 @@ void modify_video(cv::VideoCapture &original_video)
   
   while (1) {
 
+	std::cout  << "Lol" << std::endl;
   	original_video >> current_frame;
 
   	if (current_frame.empty()) {
   	  break;
   	}
+
+	std::cout  << "treta" << std::endl;
 	modified_frame = modify_frame(current_frame);
+	std::cout << "Teste!" << std::endl;
 	modified_video.write(modified_frame);
+	std::cout << "Teste_2!" << std::endl;
 
   	// Display the current frame
   	imshow("Frame", modified_frame);
@@ -195,7 +200,7 @@ void modify_video(cv::VideoCapture &original_video)
 
 int main(int argvc, char** argv){
   // Creating a VideoCapture object to hold the video file.
-  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_720p.mp4");
+  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_480p.mp4");
 
   if (!video.isOpened()) {
 	std::cerr << "Couldn't open the video file. Exiting!" << std::endl;
