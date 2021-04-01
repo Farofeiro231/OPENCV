@@ -42,7 +42,8 @@ void modify_mask(cv::Mat &mask)
   int focus_width = width_slider*(mask.rows)/100;
   int focus_height = height_slider*(mask.rows)/100;
   float focus_intensity = 1.0*intensity_slider/100;
-  cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
+  /* cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask); */
+  cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
   std::vector<int> upper_val = {0, 0, 0};
   std::vector<int> lower_val = {255, 255, 255};
 
@@ -202,15 +203,17 @@ int main(int argvc, char** argv){
   // Creating a VideoCapture object to hold the video file.
   cv::VideoCapture video = cv::VideoCapture("./figures/olaf_480p.mp4");
 
+  int frame_width = video.get(cv::CAP_PROP_FRAME_WIDTH);
+  int frame_height = video.get(cv::CAP_PROP_FRAME_HEIGHT);
+
   if (!video.isOpened()) {
 	std::cerr << "Couldn't open the video file. Exiting!" << std::endl;
 	return -1;
   }
-  
-
 
   image1 = cv::imread("./figures/blend1.jpg");
-  mask = cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
+  /* mask = cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255)); */
+  mask = cv::Mat(frame_height, frame_width, CV_8UC3, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
 
   // Creation of the averaging mask and its application upon
   // the original image.
