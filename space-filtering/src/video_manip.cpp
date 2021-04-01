@@ -195,7 +195,7 @@ void modify_video(cv::VideoCapture &original_video)
 
 int main(int argvc, char** argv){
   // Creating a VideoCapture object to hold the video file.
-  cv::VideoCapture video = cv::VideoCapture("./figures/olaf.mp4");
+  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_720p.mp4");
 
   if (!video.isOpened()) {
 	std::cerr << "Couldn't open the video file. Exiting!" << std::endl;
