@@ -146,17 +146,7 @@ void mask_control(int, void*)
   modify_mask(mask);
   std::cout << "teste_interno" << std::endl;
   cv::imshow("Mask", mask);
-  /* imageBottom = image1.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended); */
-
-  /* // When using the cv::Mat::ones method only the first channel is initialized to 1, */
-  /* // therefore I need to initialize the other two myself. I used an ordinary initialization instead. */
-
-  /* imageTop = image1.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended); */
-  /* blended = imageTop + imageBottom; */
-  /* blended = modify_frame(image1); */
-  std::cout << "teste_interno_1" << std::endl;
   cv::imshow("addweighted", mask);
-  std::cout << "teste_interno_2" << std::endl;
 }
 
 
@@ -181,18 +171,14 @@ void modify_video(cv::VideoCapture &original_video)
   
   while (1) {
 
-	std::cout  << "Lol" << std::endl;
   	original_video >> current_frame;
 
   	if (current_frame.empty()) {
   	  break;
   	}
 
-	std::cout  << "treta" << std::endl;
 	modified_frame = modify_frame(current_frame);
-	std::cout << "Teste!" << std::endl;
 	modified_video.write(modified_frame);
-	std::cout << "Teste_2!" << std::endl;
 
   	// Display the current frame
   	imshow("Frame", modified_frame);
