@@ -42,7 +42,6 @@ void modify_mask(cv::Mat &mask)
   int focus_width = width_slider*(mask.rows)/100;
   int focus_height = height_slider*(mask.rows)/100;
   float focus_intensity = 1.0*intensity_slider/100;
-  /* cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask); */
   cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
   std::vector<int> upper_val = {0, 0, 0};
   std::vector<int> lower_val = {255, 255, 255};
@@ -50,8 +49,8 @@ void modify_mask(cv::Mat &mask)
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
 
-  upper_step =  floor(255.0/(focus_height - focus_width/2.0))*focus_intensity;
-  lower_step =  floor(255.0/(mask.rows - (focus_height + focus_width/2.0)))*focus_intensity;
+  upper_step =  floor(255.0/(focus_height - focus_width/2.0)) * focus_intensity;
+  lower_step =  floor(255.0/(mask.rows - (focus_height + focus_width/2.0))) * focus_intensity;
 
   // The focus region has the following characterístics: it's centered around the focus_height and it has
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
@@ -70,7 +69,7 @@ void modify_mask(cv::Mat &mask)
 		  upper_val[1] += upper_step;
 		  upper_val[2] += upper_step;
 		}
-	  if (i >= std::min(focus_height + focus_width/2, 255))
+	  if (i >= std::min(focus_height + focus_width/2, mask.rows))
 		{
 		  lower_val[0] -= lower_step;
 		  lower_val[1] -= lower_step;
@@ -94,7 +93,7 @@ void modify_mask(cv::Mat &mask)
 				  mask.at<cv::Vec3b>(i, j)[2] = 255;
 				}
 			}
-		  else if (i >= std::min(focus_height + focus_width/2, 255))
+		  else if (i >= std::min(focus_height + focus_width/2, mask.rows))
 			{
 			  if (lower_val[0] >= 0)
 				{
@@ -113,47 +112,35 @@ void modify_mask(cv::Mat &mask)
 	}
 }
 
-void on_trackbar_blend(int, void*){
- alfa = (double) alfa_slider/alfa_slider_max ;
- cv::addWeighted(image1, 1-alfa, imageTop, alfa, 0.0, blended);
- cv::imshow("addweighted", blended);
-}
-
-void on_trackbar_line(int, void*){
-  image1.copyTo(imageTop);
-  int limit = top_slider*255/100;
-  if(limit > 0){
-    cv::Mat tmp = image2(cv::Rect(0, 0, 256, limit));
-    tmp.copyTo(imageTop(cv::Rect(0, 0, 256, limit)));
-  }
-  on_trackbar_blend(alfa_slider,0);
-}
-
-cv::Mat& modify_frame(cv::Mat &original_frame)
-{
-  imageBottom = original_frame.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
-
-  // When using the cv::Mat::ones method only the first channel is initialized to 1,
-  // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
-
-  imageTop = original_frame.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
-  blended = imageTop + imageBottom;
-  return blended;
-}
-
-void mask_control(int, void*)
-{
-  modify_mask(mask);
-  std::cout << "teste_interno" << std::endl;
-  cv::imshow("Mask", mask);
-}
-
 
 void average_filter(cv::Mat &src, cv::Mat &destination_img)
 {
   cv::Mat average_mask = cv::Mat::ones(5, 5, CV_32F)*0.04;
   cv::filter2D(src, destination_img, src.depth(), average_mask, cv::Point(1, 1), 0);
 }
+
+
+cv::Mat& modify_frame(cv::Mat &original_frame)
+{
+  static cv::Mat averaged_frame;
+  average_filter(original_frame, averaged_frame);
+  imageBottom = original_frame.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+
+  // When using the cv::Mat::ones method only the first channel is initialized to 1,
+  // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
+
+  imageTop = averaged_frame.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+  blended = imageTop + imageBottom;
+  return blended;
+}
+
+
+void mask_control(int, void*)
+{
+  modify_mask(mask);
+  cv::imshow("Mask", mask);
+}
+
 
 void modify_video(cv::VideoCapture &original_video)
 {
@@ -189,7 +176,7 @@ void modify_video(cv::VideoCapture &original_video)
 
 int main(int argvc, char** argv){
   // Creating a VideoCapture object to hold the video file.
-  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_720p.mp4");
+  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_480p.mp4");
 
   int frame_width = video.get(cv::CAP_PROP_FRAME_WIDTH);
   int frame_height = video.get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -211,14 +198,12 @@ int main(int argvc, char** argv){
   /* image2.copyTo(imageTop); */
   cv::namedWindow("Mask", 1);
 
-  std::cout << "testando_0" << std::endl;
   std::sprintf( TrackbarName, "Height x %d", height_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
                       &height_slider,
                       height_slider_max,
                       mask_control);
   mask_control(height_slider, 0);
-  std::cout << "testando_1" << std::endl;
 
   std::sprintf( TrackbarName, "Width x %d", width_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
@@ -226,7 +211,6 @@ int main(int argvc, char** argv){
                       width_slider_max,
                       mask_control);
   mask_control(width_slider, 0);
-  std::cout << "testando_2" << std::endl;
 
   std::sprintf( TrackbarName, "Intensity x %d", intensity_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
