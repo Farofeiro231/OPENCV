@@ -162,9 +162,35 @@ void average_filter(cv::Mat &src, cv::Mat &destination_img)
   cv::filter2D(src, destination_img, src.depth(), average_mask, cv::Point(1, 1), 0);
 }
 
-cv::VideoCapture modify_video(cv::VideoCapture &original_video)
+void modify_video(cv::VideoCapture &original_video)
 {
-  return NULL;
+  int frame_width = original_video.get(cv::CAP_PROP_FRAME_WIDTH);
+  int frame_height = original_video.get(cv::CAP_PROP_FRAME_HEIGHT);
+  cv::Mat current_frame;
+  cv::Mat modified_frame;
+
+  cv::VideoWriter modified_video("modified.mp4", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 10,
+								 cv::Size(frame_width, frame_height));
+
+  // Here we'll loop through the video frames until the video file has been read in its entirety.
+  // Each frame will be modified according to the selected mask.
+  
+  while (1) {
+
+  	original_video >> current_frame;
+
+  	if (current_frame.empty()) {
+  	  break;
+  	}
+	modified_frame = modify_frame(current_frame);
+	modified_video.write(modified_frame);
+
+  	// Display the current frame
+  	imshow("Frame", modified_frame);
+  }
+
+  // Releasing the memory used by the VideoWriter object
+  modified_video.release();
 }
 
 int main(int argvc, char** argv){
@@ -176,21 +202,6 @@ int main(int argvc, char** argv){
 	return -1;
   }
   
-  // Here we'll loop through the video frames until the video file has been read in its entirety.
-  
-  /* while (1) { */
-  /* 	cv::Mat current_frame; */
-
-  /* 	video >> current_frame; */
-
-  /* 	if (current_frame.empty()) { */
-  /* 	  break; */
-  /* 	} */
-
-  /* 	// Display the current frame */
-  /* 	imshow("Frame", current_frame); */
-	
-  /* } */
 
 
   image1 = cv::imread("./figures/blend1.jpg");
@@ -243,8 +254,11 @@ int main(int argvc, char** argv){
   // Waits forever for a keypress; when it happens, it either exits the program or writes the new
   // video file.
   char c = (char) cv::waitKey(0);
-  if (c == 27)
+  if (c == 27) {
+	video.release();
 	return 0;
-  else if (c == 32)
+  } else if (c == 32) {
 	modify_video(video);
+	return 0;
+  }
 }
