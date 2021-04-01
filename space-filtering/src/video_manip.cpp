@@ -128,17 +128,30 @@ void on_trackbar_line(int, void*){
   on_trackbar_blend(alfa_slider,0);
 }
 
-void mask_control(int, void*)
+cv::Mat& modify_frame(cv::Mat &original_frame)
 {
-  modify_mask(mask);
-  cv::imshow("Mask", mask);
-  imageBottom = image1.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+  imageBottom = original_frame.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
 
   // When using the cv::Mat::ones method only the first channel is initialized to 1,
   // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
 
-  imageTop = image1.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+  imageTop = original_frame.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
   blended = imageTop + imageBottom;
+  return blended;
+}
+
+void mask_control(int, void*)
+{
+  modify_mask(mask);
+  cv::imshow("Mask", mask);
+  /* imageBottom = image1.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended); */
+
+  /* // When using the cv::Mat::ones method only the first channel is initialized to 1, */
+  /* // therefore I need to initialize the other two myself. I used an ordinary initialization instead. */
+
+  /* imageTop = image1.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended); */
+  /* blended = imageTop + imageBottom; */
+  blended = modify_frame(image1);
   cv::imshow("addweighted", blended);
 }
 
@@ -151,7 +164,7 @@ void average_filter(cv::Mat &src, cv::Mat &destination_img)
 
 cv::VideoCapture modify_video(cv::VideoCapture &original_video)
 {
-  
+  return NULL;
 }
 
 int main(int argvc, char** argv){
@@ -165,19 +178,19 @@ int main(int argvc, char** argv){
   
   // Here we'll loop through the video frames until the video file has been read in its entirety.
   
-  while (1) {
-	cv::Mat current_frame;
+  /* while (1) { */
+  /* 	cv::Mat current_frame; */
 
-	video >> current_frame;
+  /* 	video >> current_frame; */
 
-	if (current_frame.empty()) {
-	  break;
-	}
+  /* 	if (current_frame.empty()) { */
+  /* 	  break; */
+  /* 	} */
 
-	// Display the current frame
-	imshow("Frame", current_frame);
+  /* 	// Display the current frame */
+  /* 	imshow("Frame", current_frame); */
 	
-  }
+  /* } */
 
 
   image1 = cv::imread("./figures/blend1.jpg");
@@ -227,7 +240,9 @@ int main(int argvc, char** argv){
                       mask_control);
   mask_control(intensity_slider, 0);
 
-  char c = (char) cv::waitKey(25);
+  // Waits forever for a keypress; when it happens, it either exits the program or writes the new
+  // video file.
+  char c = (char) cv::waitKey(0);
   if (c == 27)
 	return 0;
   else if (c == 32)
