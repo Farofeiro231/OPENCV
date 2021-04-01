@@ -144,6 +144,7 @@ cv::Mat& modify_frame(cv::Mat &original_frame)
 void mask_control(int, void*)
 {
   modify_mask(mask);
+  std::cout << "teste_interno" << std::endl;
   cv::imshow("Mask", mask);
   /* imageBottom = image1.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended); */
 
@@ -152,8 +153,10 @@ void mask_control(int, void*)
 
   /* imageTop = image1.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended); */
   /* blended = imageTop + imageBottom; */
-  blended = modify_frame(image1);
-  cv::imshow("addweighted", blended);
+  /* blended = modify_frame(image1); */
+  std::cout << "teste_interno_1" << std::endl;
+  cv::imshow("addweighted", mask);
+  std::cout << "teste_interno_2" << std::endl;
 }
 
 
@@ -218,32 +221,34 @@ int main(int argvc, char** argv){
   // Creation of the averaging mask and its application upon
   // the original image.
   
-  average_filter(image1, image2);
+  /* average_filter(image1, image2); */
 
-  image2.copyTo(imageTop);
+  /* image2.copyTo(imageTop); */
   cv::namedWindow("addweighted", 1);
   cv::namedWindow("Mask", 1);
 
-  std::sprintf( TrackbarName, "Alpha x %d", alfa_slider_max );
-  cv::createTrackbar( TrackbarName, "addweighted",
-                      &alfa_slider,
-                      alfa_slider_max,
-                      on_trackbar_blend );
-  on_trackbar_blend(alfa_slider, 0 );
+  /* std::sprintf( TrackbarName, "Alpha x %d", alfa_slider_max ); */
+  /* cv::createTrackbar( TrackbarName, "addweighted", */
+  /*                     &alfa_slider, */
+  /*                     alfa_slider_max, */
+  /*                     on_trackbar_blend ); */
+  /* on_trackbar_blend(alfa_slider, 0 ); */
 
-  std::sprintf( TrackbarName, "Scanline x %d", top_slider_max );
-  cv::createTrackbar( TrackbarName, "addweighted",
-                      &top_slider,
-                      top_slider_max,
-                      on_trackbar_line );
-  on_trackbar_line(top_slider, 0 );
+  /* std::sprintf( TrackbarName, "Scanline x %d", top_slider_max ); */
+  /* cv::createTrackbar( TrackbarName, "addweighted", */
+  /*                     &top_slider, */
+  /*                     top_slider_max, */
+  /*                     on_trackbar_line ); */
+  /* on_trackbar_line(top_slider, 0 ); */
 
+  std::cout << "testando_0" << std::endl;
   std::sprintf( TrackbarName, "Height x %d", height_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
                       &height_slider,
                       height_slider_max,
                       mask_control);
   mask_control(height_slider, 0);
+  std::cout << "testando_1" << std::endl;
 
   std::sprintf( TrackbarName, "Width x %d", width_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
@@ -251,6 +256,7 @@ int main(int argvc, char** argv){
                       width_slider_max,
                       mask_control);
   mask_control(width_slider, 0);
+  std::cout << "testando_2" << std::endl;
 
   std::sprintf( TrackbarName, "Intensity x %d", intensity_slider_max );
   cv::createTrackbar( TrackbarName, "Mask",
