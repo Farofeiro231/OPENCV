@@ -12,6 +12,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/videoio.hpp>
 
 double alfa;
 int alfa_slider = 0;
@@ -136,7 +137,7 @@ void mask_control(int, void*)
   // When using the cv::Mat::ones method only the first channel is initialized to 1,
   // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
 
-  imageTop = image2.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+  imageTop = image1.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
   blended = imageTop + imageBottom;
   cv::imshow("addweighted", blended);
 }
@@ -148,8 +149,37 @@ void average_filter(cv::Mat &src, cv::Mat &destination_img)
   cv::filter2D(src, destination_img, src.depth(), average_mask, cv::Point(1, 1), 0);
 }
 
+cv::VideoCapture modify_video(cv::VideoCapture &original_video)
+{
+  
+}
 
 int main(int argvc, char** argv){
+  // Creating a VideoCapture object to hold the video file.
+  cv::VideoCapture video = cv::VideoCapture("./figures/olaf.mp4");
+
+  if (!video.isOpened()) {
+	std::cerr << "Couldn't open the video file. Exiting!" << std::endl;
+	return -1;
+  }
+  
+  // Here we'll loop through the video frames until the video file has been read in its entirety.
+  
+  while (1) {
+	cv::Mat current_frame;
+
+	video >> current_frame;
+
+	if (current_frame.empty()) {
+	  break;
+	}
+
+	// Display the current frame
+	imshow("Frame", current_frame);
+	
+  }
+
+
   image1 = cv::imread("./figures/blend1.jpg");
   mask = cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
 
@@ -197,6 +227,9 @@ int main(int argvc, char** argv){
                       mask_control);
   mask_control(intensity_slider, 0);
 
-  cv::waitKey(0);
-  return 0;
+  char c = (char) cv::waitKey(25);
+  if (c == 27)
+	return 0;
+  else if (c == 32)
+	modify_video(video);
 }
