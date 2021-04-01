@@ -146,7 +146,6 @@ void mask_control(int, void*)
   modify_mask(mask);
   std::cout << "teste_interno" << std::endl;
   cv::imshow("Mask", mask);
-  cv::imshow("addweighted", mask);
 }
 
 
@@ -190,7 +189,7 @@ void modify_video(cv::VideoCapture &original_video)
 
 int main(int argvc, char** argv){
   // Creating a VideoCapture object to hold the video file.
-  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_480p.mp4");
+  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_720p.mp4");
 
   int frame_width = video.get(cv::CAP_PROP_FRAME_WIDTH);
   int frame_height = video.get(cv::CAP_PROP_FRAME_HEIGHT);
@@ -210,22 +209,7 @@ int main(int argvc, char** argv){
   /* average_filter(image1, image2); */
 
   /* image2.copyTo(imageTop); */
-  cv::namedWindow("addweighted", 1);
   cv::namedWindow("Mask", 1);
-
-  /* std::sprintf( TrackbarName, "Alpha x %d", alfa_slider_max ); */
-  /* cv::createTrackbar( TrackbarName, "addweighted", */
-  /*                     &alfa_slider, */
-  /*                     alfa_slider_max, */
-  /*                     on_trackbar_blend ); */
-  /* on_trackbar_blend(alfa_slider, 0 ); */
-
-  /* std::sprintf( TrackbarName, "Scanline x %d", top_slider_max ); */
-  /* cv::createTrackbar( TrackbarName, "addweighted", */
-  /*                     &top_slider, */
-  /*                     top_slider_max, */
-  /*                     on_trackbar_line ); */
-  /* on_trackbar_line(top_slider, 0 ); */
 
   std::cout << "testando_0" << std::endl;
   std::sprintf( TrackbarName, "Height x %d", height_slider_max );
