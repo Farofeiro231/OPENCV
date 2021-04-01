@@ -169,7 +169,7 @@ void modify_video(cv::VideoCapture &original_video)
   cv::Mat current_frame;
   cv::Mat modified_frame;
 
-  cv::VideoWriter modified_video("modified.mp4", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 10,
+  cv::VideoWriter modified_video("modified.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30,
 								 cv::Size(frame_width, frame_height));
 
   // Here we'll loop through the video frames until the video file has been read in its entirety.
@@ -259,6 +259,7 @@ int main(int argvc, char** argv){
 	return 0;
   } else if (c == 32) {
 	modify_video(video);
+	video.release();
 	return 0;
   }
 }
