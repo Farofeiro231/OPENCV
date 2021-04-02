@@ -49,8 +49,8 @@ void modify_mask(cv::Mat &mask)
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
 
-  upper_step =  (255.0/(focus_height - focus_width/2.0)) * focus_intensity;
-  lower_step =  (255.0/(mask.rows - (focus_height + focus_width/2.0))) * focus_intensity;
+  upper_step =  (1.0/(focus_height - focus_width/2.0)) * focus_intensity;
+  lower_step =  (1.0/(mask.rows - (focus_height + focus_width/2.0))) * focus_intensity;
 
   // The focus region has the following characterístics: it's centered around the focus_height and it has
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
@@ -78,10 +78,10 @@ void modify_mask(cv::Mat &mask)
 
 	  for (int j=0; j<mask.cols; j++) {
 		if (i < std::max(focus_height - focus_width/2, 0)) {
-		  if (upper_val[0] <= 255) {
-			mask.at<cv::Vec3b>(i, j)[0] = upper_val[0];
-			mask.at<cv::Vec3b>(i, j)[1] = upper_val[1];
-			mask.at<cv::Vec3b>(i, j)[2] = upper_val[2];
+		  if (upper_val[0] <= 1) {
+			mask.at<cv::Vec3b>(i, j)[0] = upper_val[0] * 255;
+			mask.at<cv::Vec3b>(i, j)[1] = upper_val[1] * 255;
+			mask.at<cv::Vec3b>(i, j)[2] = upper_val[2] * 255;
 		  } else {
 			mask.at<cv::Vec3b>(i, j)[0] = 255;
 			mask.at<cv::Vec3b>(i, j)[1] = 255;
@@ -90,9 +90,9 @@ void modify_mask(cv::Mat &mask)
 		}
 		else if (i >= std::min(focus_height + focus_width/2, mask.rows)) {
 		  if (lower_val[0] >= 0) {
-			mask.at<cv::Vec3b>(i, j)[0] = lower_val[0];
-			mask.at<cv::Vec3b>(i, j)[1] = lower_val[1];
-			mask.at<cv::Vec3b>(i, j)[2] = lower_val[2];
+			mask.at<cv::Vec3b>(i, j)[0] = lower_val[0] * 255;
+			mask.at<cv::Vec3b>(i, j)[1] = lower_val[1] * 255;
+			mask.at<cv::Vec3b>(i, j)[2] = lower_val[2] * 255;
 		  } else {
 			mask.at<cv::Vec3b>(i, j)[0] = 0;
 			mask.at<cv::Vec3b>(i, j)[1] = 0;
@@ -114,22 +114,30 @@ void average_filter(cv::Mat &src, cv::Mat &destination_img)
 cv::Mat& modify_frame(cv::Mat &original_frame)
 {
   static cv::Mat averaged_frame;
+  static cv::Mat temp;
+  static cv::Mat reverse_mask;
+  
+  reverse_mask = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)) - mask;
   average_filter(original_frame, averaged_frame);
   imageBottom = original_frame.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
 
   // When using the cv::Mat::ones method only the first channel is initialized to 1,
   // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
 
-  imageTop = averaged_frame.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+
+  imageTop = averaged_frame.mul(reverse_mask * (1.0 / 255));//cv::multiply(mask, mask*(1.0/255), blended);
   blended = imageTop + imageBottom;
-  return blended;
+  return imageTop;
 }
 
 
 void mask_control(int, void*)
 {
   modify_mask(mask);
+  cv::Mat new_mat = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)) - mask;
+  cv::Mat reverse_mask = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)).mul((new_mat * (1.0 / 255)));
   cv::imshow("Mask", mask);
+  cv::imshow("Mask teste", reverse_mask);// * (1.0/255.0));
 }
 
 
