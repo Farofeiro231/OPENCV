@@ -106,7 +106,7 @@ void modify_mask(cv::Mat &mask)
 
 void average_filter(cv::Mat &src, cv::Mat &destination_img)
 {
-  cv::Mat average_mask = cv::Mat::ones(5, 5, CV_32F)*0.04;
+  cv::Mat average_mask = cv::Mat::ones(5, 5, CV_32F) * 0.1;//0.04;
   cv::filter2D(src, destination_img, src.depth(), average_mask, cv::Point(1, 1), 0);
 }
 
@@ -127,7 +127,7 @@ cv::Mat& modify_frame(cv::Mat &original_frame)
 
   imageTop = averaged_frame.mul(reverse_mask * (1.0 / 255));//cv::multiply(mask, mask*(1.0/255), blended);
   blended = imageTop + imageBottom;
-  return imageTop;
+  return blended;
 }
 
 
@@ -175,7 +175,7 @@ void modify_video(cv::VideoCapture &original_video)
 
 int main(int argvc, char** argv){
   // Creating a VideoCapture object to hold the video file.
-  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_480p.mp4");
+  cv::VideoCapture video = cv::VideoCapture("./figures/landscape.mp4");
 
   int frame_width = video.get(cv::CAP_PROP_FRAME_WIDTH);
   int frame_height = video.get(cv::CAP_PROP_FRAME_HEIGHT);
