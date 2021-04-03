@@ -57,7 +57,7 @@ void modify_mask(cv::Mat &mask)
   // as a transition zone above and below it.
 
   int k = 0;
-  for (int i=0; i<mask.rows; i++) {
+  for (int i = 0; i < mask.rows; i++) {
 	std::cout << "Value of focus_height - focus_width/2: " << std::max(focus_height - focus_width/2, 0) << std::endl;
 	std::cout << "upper step: " << upper_step << std::endl;
 	std::cout << "focus height: " << focus_height << std::endl;
@@ -76,8 +76,11 @@ void modify_mask(cv::Mat &mask)
 		lower_val[2] -= lower_step;
 	  }
 
+	  if (i < focus_height)
+		std::cout << "i, Upper value: " << i << ", " << upper_val[0] * 255 << std::endl;
+
 	  for (int j=0; j<mask.cols; j++) {
-		if (i < std::max(focus_height - focus_width/2, 0)) {
+		// if (i < std::max(focus_height - focus_width/2, 0)) {
 		  if (upper_val[0] <= 1) {
 			mask.at<cv::Vec3b>(i, j)[0] = upper_val[0] * 255;
 			mask.at<cv::Vec3b>(i, j)[1] = upper_val[1] * 255;
@@ -87,8 +90,8 @@ void modify_mask(cv::Mat &mask)
 			mask.at<cv::Vec3b>(i, j)[1] = 255;
 			mask.at<cv::Vec3b>(i, j)[2] = 255;
 		  }
-		}
-		else if (i >= std::min(focus_height + focus_width/2, mask.rows)) {
+		// }
+		// else if (i >= std::min(focus_height + focus_width/2, mask.rows)) {
 		  if (lower_val[0] >= 0) {
 			mask.at<cv::Vec3b>(i, j)[0] = lower_val[0] * 255;
 			mask.at<cv::Vec3b>(i, j)[1] = lower_val[1] * 255;
@@ -98,7 +101,7 @@ void modify_mask(cv::Mat &mask)
 			mask.at<cv::Vec3b>(i, j)[1] = 0;
 			mask.at<cv::Vec3b>(i, j)[2] = 0;
 		  }
-		}
+		// }
 	  }
 	}
 }
@@ -175,7 +178,7 @@ void modify_video(cv::VideoCapture &original_video)
 
 int main(int argvc, char** argv){
   // Creating a VideoCapture object to hold the video file.
-  cv::VideoCapture video = cv::VideoCapture("./figures/landscape.mp4");
+  cv::VideoCapture video = cv::VideoCapture("./figures/olaf_480p.mp4");
 
   int frame_width = video.get(cv::CAP_PROP_FRAME_WIDTH);
   int frame_height = video.get(cv::CAP_PROP_FRAME_HEIGHT);
