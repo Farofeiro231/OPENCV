@@ -113,7 +113,7 @@ void modify_mask(cv::Mat &mask)
 
 void average_filter(cv::Mat &src, cv::Mat &destination_img)
 {
-  cv::Mat average_mask = cv::Mat::ones(5, 5, CV_32F) * 0.1;//0.04;
+  cv::Mat average_mask = cv::Mat::ones(5, 5, CV_32F) * 0.1;
   cv::filter2D(src, destination_img, src.depth(), average_mask, cv::Point(1, 1), 0);
 }
 
@@ -126,13 +126,13 @@ cv::Mat& modify_frame(cv::Mat &original_frame)
   
   reverse_mask = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)) - mask;
   average_filter(original_frame, averaged_frame);
-  imageBottom = original_frame.mul(mask*(1.0/255));//cv::multiply(mask, mask*(1.0/255), blended);
+  imageBottom = original_frame.mul(mask*(1.0/255));
 
   // When using the cv::Mat::ones method only the first channel is initialized to 1,
   // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
 
 
-  imageTop = averaged_frame.mul(reverse_mask * (1.0 / 255));//cv::multiply(mask, mask*(1.0/255), blended);
+  imageTop = averaged_frame.mul(reverse_mask * (1.0 / 255));
   blended = imageTop + imageBottom;
   return blended;
 }
@@ -144,7 +144,7 @@ void mask_control(int, void*)
   cv::Mat new_mat = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)) - mask;
   cv::Mat reverse_mask = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)).mul((new_mat * (1.0 / 255)));
   cv::imshow("Mask", mask);
-  cv::imshow("Mask teste", reverse_mask);// * (1.0/255.0));
+  cv::imshow("Mask teste", reverse_mask);
 }
 
 
@@ -193,8 +193,7 @@ int main(int argvc, char** argv){
   }
 
   image1 = cv::imread("./figures/blend1.jpg");
-  /* mask = cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255)); */
-  mask = cv::Mat(frame_height, frame_width, CV_8UC3, cv::Scalar(255, 255, 255));//CV_8UC1, cv::Scalar(255,255,255));
+  mask = cv::Mat(frame_height, frame_width, CV_8UC3, cv::Scalar(255, 255, 255));
 
   // Creation of the averaging mask and its application upon
   // the original image.
@@ -226,7 +225,7 @@ int main(int argvc, char** argv){
   mask_control(intensity_slider, 0);
 
   // Waits forever for a keypress; when it happens, it either exits the program or writes the new
-  // video file.
+  // video file. To exit the program, press ESC; to write the video file, press SPACEBAR.
   char c = (char) cv::waitKey(0);
   if (c == 27) {
 	video.release();
