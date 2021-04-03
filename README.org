@@ -23,8 +23,8 @@ The /pixel-manip.cpp/ only opens the image passed as an argument and converts it
 
 The last program in this section is the one in the /swap-regions.cpp/ file. As its name suggests, this program takes an image and swaps its portions located in opposite quadrants (as in the for quadrants in a cartesian plan). The code mechanism is very simple; all of the work is done by the *swap_image* function: it takes the source image and the image (both are OPENCV Mat objects) that will receive the modified image resulting from the operation. Innside it, another Mat object of size of a single quadrant (i.e.: half the height and half the width of the original image) is created containing all zeros; then, one by one, the quadrants of the output image are replaced by the sum of this newly created all-zeros Mat with the opposing portion of the original image (the sum is necessary to create a new Mat object and to avoid modifying the original image in the swapping process). Running the program on the Lenna image yields the results shown bellow.
 
-|----------------------+------------------------------|
-| Original Lenna image | Modified Lenna image         |
-|----------------------+------------------------------|
-| [[./figuras/lenna.png]]  | [[./figuras/negative-lenna.png]] |
-|----------------------+------------------------------|
+|----------------------+-----------------------------|
+| Original Lenna image | Modified Lenna image        |
+|----------------------+-----------------------------|
+| [[./figuras/lenna.png]]  | [[./figuras/swapped-lenna.png]] |
+|----------------------+-----------------------------|
