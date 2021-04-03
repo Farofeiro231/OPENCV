@@ -9,5 +9,6 @@ Within the *pixel-manipulation* folder, there are a few simple programs. The fir
 | [[./figuras/bolhas.png]] | [[./figuras/strip-modified.png]] |
 |----------------------+------------------------------|
 
-The /pixel-manip.cpp/ only opens the image passed as an argument and converts it to a grayscale image, hence I won't discuss it any further.
+The /pixel-manip.cpp/ only opens the image passed as an argument and converts it to a grayscale image, hence I won't discuss it any further. The /regions.cpp/ program, however, is a bit more interesting; in it, the user passes an image image during the function call for the program to "negate" one portion of it; it works as follows: once the image is open, the user is asked for two (x, y) points, one for the upper-left corner of the negative rectangle to be created, and the other for the bottom-right corner. Once the two points are provided, every pixel within that zone has its value replace by the corresponding negative value; i.e.:
+$ new\_value = 255 - original\_value$.
 
