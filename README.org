@@ -32,3 +32,5 @@ The last program in this section is the one in the /swap-regions.cpp/ file. As i
 |----------------------+-----------------------------|
 | [[./figuras/Lenna.png]]  | [[./figuras/swapped-lenna.png]] |
 |----------------------+-----------------------------|
+
+* Histogram manipulation
