@@ -1,5 +1,11 @@
 * Overview
 This repository's goal is to hold my work for the Digital Image Processig course at UFRN. The programs here contained are of escalating complexity, starting with simple pixel manipulations in an image, going through video file manipulations until image frequency filtering.
 * Pixel manipulation
-Within the */pixel-manipulation/* folder, there are a few simple programs. The first program (/pixels.cpp/) is a simple region manipulation one, where a strip of the image is painted in orange.
+Within the *pixel-manipulation* folder, there are a few simple programs. The first program (/pixels.cpp/) is a simple region manipulation one, where a strip of the image is painted in orange. The operation there performed is shown below.
  
+#+CAPTION: Teste
+#+NAME: fig:teste
+#+ATTR_LATEX: :width 0.8\linewidth
+#+ATTR_LATEX: :float :placement [H] :center t
+[[./figuras/bolhas.png]]
+
