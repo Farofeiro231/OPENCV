@@ -49,8 +49,13 @@ void modify_mask(cv::Mat &mask)
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
 
-  upper_step =  (1.0/(focus_height - focus_width/2.0)) * focus_intensity;
-  lower_step =  (1.0/(mask.rows - (focus_height + focus_width/2.0))) * focus_intensity;
+  if ((focus_height - focus_width/2.0) >=0)
+	upper_step =  (1.0/(focus_width/2.0)) * focus_intensity;
+  else
+	upper_step = (1.0 / focus_height) * focus_intensity;
+   
+  // lower_step =  (1.0/(mask.rows - (focus_height + focus_width/2.0))) * focus_intensity;
+  lower_step =  (1.0/(focus_height + focus_width/2.0)) * focus_intensity;
 
   // The focus region has the following characterístics: it's centered around the focus_height and it has
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
