@@ -68,53 +68,46 @@ void modify_mask(cv::Mat &mask)
   int upper_boundary = std::min(focus_height + focus_width/2, mask.rows);
   int k = 0;
   for (int i = 0; i < mask.rows; i++) {
-	std::cout << "Value of focus_height - focus_width/2: " << std::max(focus_height - focus_width/2, 0) << std::endl;
-	std::cout << "upper step: " << upper_step << std::endl;
-	std::cout << "focus height: " << focus_height << std::endl;
-	  // The loop actually goes 3 times through i = n, because the image
-	  // has 3 color channels; hence, I need to reset the increment value each time,
-	  // otherwise it will show stripes on screen due to the resetting of the uchar
-	  // value inside the image.
+	// The loop actually goes 3 times through i = n, because the image
+	// has 3 color channels; hence, I need to reset the increment value each time,
+	// otherwise it will show stripes on screen due to the resetting of the uchar
+	// value inside the image.
 	if (i > lower_boundary && i < focus_height) {
-		upper_val[0] += upper_step;
-		upper_val[1] += upper_step;
-		upper_val[2] += upper_step;
-	  }
-	  if (i >= focus_height && i < upper_boundary) {
-		lower_val[0] -= lower_step;
-		lower_val[1] -= lower_step;
-		lower_val[2] -= lower_step;
-	  }
+	  upper_val[0] += upper_step;
+	  upper_val[1] += upper_step;
+	  upper_val[2] += upper_step;
+	}
+	if (i >= focus_height && i < upper_boundary) {
+	  lower_val[0] -= lower_step;
+	  lower_val[1] -= lower_step;
+	  lower_val[2] -= lower_step;
+	}
 
-	  if (i < focus_height)
-		std::cout << "i, Upper value: " << i << ", " << upper_val[0] * 255 << std::endl;
-
-	  for (int j=0; j<mask.cols; j++) {
-		if (i > lower_boundary && i < focus_height) {
-		  if (upper_val[0] <= 1) {
-			mask.at<cv::Vec3b>(i, j)[0] = upper_val[0] * 255;
-			mask.at<cv::Vec3b>(i, j)[1] = upper_val[1] * 255;
-			mask.at<cv::Vec3b>(i, j)[2] = upper_val[2] * 255;
-			// std::cout << "Value at (i, j)[0]: " << mask.at<cv::Vec3b>(i, j)[0] << std::endl;
-		  } else {
-			mask.at<cv::Vec3b>(i, j)[0] = 255;
-			mask.at<cv::Vec3b>(i, j)[1] = 255;
-			mask.at<cv::Vec3b>(i, j)[2] = 255;
-		  }
+	for (int j=0; j<mask.cols; j++) {
+	  if (i > lower_boundary && i < focus_height) {
+		if (upper_val[0] <= 1) {
+		  mask.at<cv::Vec3b>(i, j)[0] = upper_val[0] * 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = upper_val[1] * 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = upper_val[2] * 255;
+		} else {
+		  mask.at<cv::Vec3b>(i, j)[0] = 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = 255;
 		}
-		else if (i >= focus_height && i < upper_boundary) {
-		  if (lower_val[0] >= 0) {
-			mask.at<cv::Vec3b>(i, j)[0] = lower_val[0] * 255;
-			mask.at<cv::Vec3b>(i, j)[1] = lower_val[1] * 255;
-			mask.at<cv::Vec3b>(i, j)[2] = lower_val[2] * 255;
-		  } else {
-			mask.at<cv::Vec3b>(i, j)[0] = 0;
-			mask.at<cv::Vec3b>(i, j)[1] = 0;
-			mask.at<cv::Vec3b>(i, j)[2] = 0;
-		  }
+	  }
+	  else if (i >= focus_height && i < upper_boundary) {
+		if (lower_val[0] >= 0) {
+		  mask.at<cv::Vec3b>(i, j)[0] = lower_val[0] * 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = lower_val[1] * 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = lower_val[2] * 255;
+		} else {
+		  mask.at<cv::Vec3b>(i, j)[0] = 0;
+		  mask.at<cv::Vec3b>(i, j)[1] = 0;
+		  mask.at<cv::Vec3b>(i, j)[2] = 0;
 		}
 	  }
 	}
+  }
 }
 
 

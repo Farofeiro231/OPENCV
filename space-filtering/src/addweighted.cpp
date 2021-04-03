@@ -36,79 +36,77 @@ char TrackbarName[50];
 
 void modify_mask(cv::Mat &mask)
 {
-  int upper_step = 0;
-  int lower_step = 0;
-  int focus_width = width_slider*(mask.rows)/100;
+  float upper_step = 0;
+  float lower_step = 0;
+  int focus_width = width_slider*(mask.cols)/100;
   int focus_height = height_slider*(mask.rows)/100;
   float focus_intensity = 1.0*intensity_slider/100;
-  cv::Mat(image1.rows, image1.cols, CV_8UC3, cv::Scalar(255, 255, 255)).copyTo(mask);
-  std::vector<int> upper_val = {0, 0, 0};
-  std::vector<int> lower_val = {255, 255, 255};
+  cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(0, 0, 0)).copyTo(mask);
+  std::vector<float> upper_val = {0, 0, 0};
+  std::vector<float> lower_val = {1, 1, 1};
 
   // I used the matrix_data approach because I wanted to see if there was a noticeable difference
   // in speed by using that (in contrast with the at<> method).
 
-  upper_step =  floor(255.0/(focus_height - focus_width/2.0))*focus_intensity;
-  lower_step =  floor(255.0/(mask.rows - (focus_height + focus_width/2.0)))*focus_intensity;
+  if ((focus_height - focus_width / 2.0) >=0)
+	upper_step =  (1.0 / (focus_width / 2.0)) * focus_intensity;
+  else
+	upper_step = (1.0 / focus_height) * focus_intensity;
+   
+  // lower_step =  (1.0/(mask.rows - (focus_height + focus_width/2.0))) * focus_intensity;
+  if ((focus_height + focus_width / 2.0) <= mask.rows)
+	lower_step = (1.0 / (focus_width / 2.0)) * focus_intensity;
+  else
+	lower_step = (1.0 / (mask.rows - focus_height)) * focus_intensity;
 
   // The focus region has the following characterístics: it's centered around the focus_height and it has
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
   // as a transition zone above and below it.
 
+  int lower_boundary = std::max(focus_height - focus_width/2, 0);
+  int upper_boundary = std::min(focus_height + focus_width/2, mask.rows);
   int k = 0;
-  for (int i=0; i<mask.rows; i++)
-	{
-	  // The loop actually goes 3 times through i = n, because the image
-	  // has 3 color channels; hence, I need to reset the increment value each time,
-	  // otherwise it will show stripes on screen due to the resetting of the uchar
-	  // value inside the image.
-	  if (i < std::max(focus_height - focus_width/2, 0))
-		{
-		  upper_val[0] += upper_step;
-		  upper_val[1] += upper_step;
-		  upper_val[2] += upper_step;
-		}
-	  if (i >= std::min(focus_height + focus_width/2, 255))
-		{
-		  lower_val[0] -= lower_step;
-		  lower_val[1] -= lower_step;
-		  lower_val[2] -= lower_step;
-		}
-
-	  for (int j=0; j<mask.cols; j++)
-		{
-		  if (i < std::max(focus_height - focus_width/2, 0))
-			{
-			  if (upper_val[0] <= 255)
-				{
-				  mask.at<cv::Vec3b>(i, j)[0] = upper_val[0];
-				  mask.at<cv::Vec3b>(i, j)[1] = upper_val[1];
-				  mask.at<cv::Vec3b>(i, j)[2] = upper_val[2];
-				}
-			  else
-				{
-				  mask.at<cv::Vec3b>(i, j)[0] = 255;
-				  mask.at<cv::Vec3b>(i, j)[1] = 255;
-				  mask.at<cv::Vec3b>(i, j)[2] = 255;
-				}
-			}
-		  else if (i >= std::min(focus_height + focus_width/2, 255))
-			{
-			  if (lower_val[0] >= 0)
-				{
-				  mask.at<cv::Vec3b>(i, j)[0] = lower_val[0];
-				  mask.at<cv::Vec3b>(i, j)[1] = lower_val[1];
-				  mask.at<cv::Vec3b>(i, j)[2] = lower_val[2];
-				}
-			  else
-				{
-				  mask.at<cv::Vec3b>(i, j)[0] = 0;
-				  mask.at<cv::Vec3b>(i, j)[1] = 0;
-				  mask.at<cv::Vec3b>(i, j)[2] = 0;
-				}
-			}
-		}
+  for (int i = 0; i < mask.rows; i++) {
+	// The loop actually goes 3 times through i = n, because the image
+	// has 3 color channels; hence, I need to reset the increment value each time,
+	// otherwise it will show stripes on screen due to the resetting of the uchar
+	// value inside the image.
+	if (i > lower_boundary && i < focus_height) {
+	  upper_val[0] += upper_step;
+	  upper_val[1] += upper_step;
+	  upper_val[2] += upper_step;
 	}
+	if (i >= focus_height && i < upper_boundary) {
+	  lower_val[0] -= lower_step;
+	  lower_val[1] -= lower_step;
+	  lower_val[2] -= lower_step;
+	}
+
+	for (int j=0; j<mask.cols; j++) {
+	  if (i > lower_boundary && i < focus_height) {
+		if (upper_val[0] <= 1) {
+		  mask.at<cv::Vec3b>(i, j)[0] = upper_val[0] * 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = upper_val[1] * 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = upper_val[2] * 255;
+		} else {
+		  mask.at<cv::Vec3b>(i, j)[0] = 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = 255;
+		}
+	  }
+	  else if (i >= focus_height && i < upper_boundary) {
+		if (lower_val[0] >= 0) {
+		  mask.at<cv::Vec3b>(i, j)[0] = lower_val[0] * 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = lower_val[1] * 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = lower_val[2] * 255;
+		} else {
+		  mask.at<cv::Vec3b>(i, j)[0] = 0;
+		  mask.at<cv::Vec3b>(i, j)[1] = 0;
+		  mask.at<cv::Vec3b>(i, j)[2] = 0;
+		}
+	  }
+	}
+  }
 }
 
 void on_trackbar_blend(int, void*){
