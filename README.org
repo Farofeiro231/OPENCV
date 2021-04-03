@@ -1,4 +1,4 @@
 * Overview
-This repository's goal is to hold my work for the Digital Image Processig course at UFRN. The programs here contained are of escalating complexity, starting with simple pixel manipulations in an image and goinng to video file manipulations.
+This repository's goal is to hold my work for the Digital Image Processig course at UFRN. The programs here contained are of escalating complexity, starting with simple pixel manipulations in an image, going through video file manipulations until image frequency filtering.
 * Pixel manipulation
  
