@@ -12,21 +12,17 @@
 // This function needs some streamlining. A lisp macro would do the job. 
 void get_coordinates(std::vector<int> &point1, std::vector<int> &point2)
 {
-  std::cout << "P1(X): " << point1[0] << std::endl;
-  std::cout << "P1(Y): " << point1[1] << std::endl;
   int temp;
   const char* points[] = {"P(x)", "P(y)"};
   std::cout << "Please provide the requested coordinates for P1" << std::endl;
   for (int i=0; i<2; i++){
-	std::cout << "P1(" << (i==0?"X):":"Y):") << std::endl;
+	std::cout << "P1(" << (i==0?"X): ":"Y): ");
 	std::cin >> temp;
 	point1[i] = temp;
   }
-  std::cout << "P1(X): " << point1[0] << std::endl;
-  std::cout << "P1(Y): " << point1[1] << std::endl;
   std::cout << "Please provide the requested coordinates for P2" << std::endl;
   for (int i=0; i<2; i++){
-	std::cout << "P2(" << (i==0?"X):":"Y):") << std::endl;
+	std::cout << "P2(" << (i==0?"X): ":"Y): ");
 	std::cin >> temp;
 	point2[i] = temp;
   }
@@ -39,7 +35,6 @@ void negate_image(cv::Mat &src_image, cv::Mat &out_image, std::vector<int> &poin
 
   for(int x=point1[0];x<point2[0];x++){
 	for(int y=point1[1];y<point2[1];y++){
-	  std::cout << "Coords: (" << x << "," << y << ")" << std::endl;
 	  out_image.at<uchar>(x,y) = white - src_image.at<uchar>(x,y);
 	}
   }
