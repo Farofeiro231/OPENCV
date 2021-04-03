@@ -15,8 +15,8 @@ The /pixel-manip.cpp/ only opens the image passed as an argument and converts it
 
  Below is the result of applying the negative effect to an area delimited by P1 = (50, 100) and P2 = (300, 500) on the Lenna image.
 
-|---------------------+------------------------------|
-| Original image      | Modified image               |
-|---------------------+------------------------------|
-| [[./figuras/Lenna.png]] | [[./figuras/strip-modified.png]] |
-|---------------------+------------------------------|
+|----------------------+------------------------------|
+| Original Lenna image | Modified Lenna image         |
+|----------------------+------------------------------|
+| [[./figuras/Lenna.png]]  | [[./figuras/negative-lenna.png]] |
+|----------------------+------------------------------|
