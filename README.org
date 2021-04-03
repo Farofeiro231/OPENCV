@@ -3,8 +3,9 @@ This repository's goal is to hold my work for the Digital Image Processig course
 * Pixel manipulation
 Within the *pixel-manipulation* folder, there are a few simple programs. The first program (/pixels.cpp/) is a simple region manipulation one, where a strip of the image is painted in orange. The operation there performed is shown below.
 
-|----------------------+------------------------------------|
-| Original image       | Strip-modified image               |
-|----------------------+------------------------------------|
-| [[./figuras/bolhas.png]] | [[./figuras/strip_modified_image.png]] |
+|----------------------+------------------------------|
+| Original image       | Strip-modified image         |
+|----------------------+------------------------------|
+| [[./figuras/bolhas.png]] | [[./figuras/strip-modified.png]] |
+|----------------------+------------------------------|
 
