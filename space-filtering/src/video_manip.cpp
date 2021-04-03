@@ -56,6 +56,8 @@ void modify_mask(cv::Mat &mask)
   // the remaining of the image outside [focus_height - focus_width/2, focus_height + focus_width/2]
   // as a transition zone above and below it.
 
+  int lower_boundary = std::max(focus_height - focus_width/2, 0);
+  int upper_boundary = std::min(focus_height + focus_width/2, mask.rows);
   int k = 0;
   for (int i = 0; i < mask.rows; i++) {
 	std::cout << "Value of focus_height - focus_width/2: " << std::max(focus_height - focus_width/2, 0) << std::endl;
@@ -65,12 +67,12 @@ void modify_mask(cv::Mat &mask)
 	  // has 3 color channels; hence, I need to reset the increment value each time,
 	  // otherwise it will show stripes on screen due to the resetting of the uchar
 	  // value inside the image.
-	  if (i < std::max(focus_height - focus_width/2, 0)) {
+	  if (i < lower_boundary) {
 		upper_val[0] += upper_step;
 		upper_val[1] += upper_step;
 		upper_val[2] += upper_step;
 	  }
-	  if (i >= std::min(focus_height + focus_width/2, mask.rows)) {
+	  if (i >= upper_boundary) {
 		lower_val[0] -= lower_step;
 		lower_val[1] -= lower_step;
 		lower_val[2] -= lower_step;
@@ -81,26 +83,26 @@ void modify_mask(cv::Mat &mask)
 
 	  for (int j=0; j<mask.cols; j++) {
 		// if (i < std::max(focus_height - focus_width/2, 0)) {
-		  if (upper_val[0] <= 1) {
-			mask.at<cv::Vec3b>(i, j)[0] = upper_val[0] * 255;
-			mask.at<cv::Vec3b>(i, j)[1] = upper_val[1] * 255;
-			mask.at<cv::Vec3b>(i, j)[2] = upper_val[2] * 255;
-		  } else {
-			mask.at<cv::Vec3b>(i, j)[0] = 255;
-			mask.at<cv::Vec3b>(i, j)[1] = 255;
-			mask.at<cv::Vec3b>(i, j)[2] = 255;
-		  }
+		if (upper_val[0] <= 1) {
+		  mask.at<cv::Vec3b>(i, j)[0] = upper_val[0] * 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = upper_val[1] * 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = upper_val[2] * 255;
+		} else {
+		  mask.at<cv::Vec3b>(i, j)[0] = 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = 255;
+		}
 		// }
 		// else if (i >= std::min(focus_height + focus_width/2, mask.rows)) {
-		  if (lower_val[0] >= 0) {
-			mask.at<cv::Vec3b>(i, j)[0] = lower_val[0] * 255;
-			mask.at<cv::Vec3b>(i, j)[1] = lower_val[1] * 255;
-			mask.at<cv::Vec3b>(i, j)[2] = lower_val[2] * 255;
-		  } else {
-			mask.at<cv::Vec3b>(i, j)[0] = 0;
-			mask.at<cv::Vec3b>(i, j)[1] = 0;
-			mask.at<cv::Vec3b>(i, j)[2] = 0;
-		  }
+		if (lower_val[0] >= 0) {
+		  mask.at<cv::Vec3b>(i, j)[0] = lower_val[0] * 255;
+		  mask.at<cv::Vec3b>(i, j)[1] = lower_val[1] * 255;
+		  mask.at<cv::Vec3b>(i, j)[2] = lower_val[2] * 255;
+		} else {
+		  mask.at<cv::Vec3b>(i, j)[0] = 0;
+		  mask.at<cv::Vec3b>(i, j)[1] = 0;
+		  mask.at<cv::Vec3b>(i, j)[2] = 0;
+		}
 		// }
 	  }
 	}
