@@ -61,4 +61,11 @@ This folder contains a simple program to detect and count the number of full and
 Entering now the realm of more complex manipulations and starting to work with colored images, this portion of the activity handles histogram manipulations. The first program here performs a simple histogram equalization on an image, and the second one uses the differences on frames' histograms to detect motion in a video captured scene.
 ** Equalization
 The equalization program (/equalize.cpp/ inside the manip-histogram folder) performs an histogram equalization on the frames captured by the default video device on the computer, and display both the original video and its equalized version on-screen. The equalized version has, as predicted, a slight delay in comparison to the original video (as it has to perform a few operations on each frame before displaying them).
-The first procedure in the program is to initialize the VideoCapture object (named *cap*) on line 93 (after declaring all the other variables). If the video capture device cannot be open for whatever reason, the execution ends; however, if the device is available, the object has, then, connfigured its captured frames' height and width. On lines /110/ to /114/ are initialized the objects that will hold mini-plots of the current frame's histogram for each image (the red, blue and green histograms will, each, be displayed in a small rectangle on the top left corner of the captured image).
+
+The first procedure in the program is to initialize the VideoCapture object (named *cap*) on line 93 (after declaring all the other variables). If the video capture device cannot be open for whatever reason, the execution ends; however, if the device is available, the object has, then, connfigured its captured frames' height and width. On lines /110/ to /114/ are initialized the objects that will hold mini-plots of the current frame's histogram for each image (the red, blue and green histograms will, each, be displayed in a small rectangle on the top left corner of the captured image). Then, the program goes on the loop responsible for equalizing the incoming frame's histogram and showing both the original frame and the equalized version on screen.
+
+Once inside the loop, each frame has its histogram - for each color plane - normalized and histored in the *histR*, *histG*, and *histB* variables. This is done in the line 121:
+
+#+begin_src cpp
+  equalizeHistogram(image, planes, histR, histG, histB, nbins, histrange);
+#+end_src
