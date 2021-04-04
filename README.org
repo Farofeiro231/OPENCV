@@ -45,6 +45,7 @@ This folder contains a simple program to detect and count the number of full and
 7) To conclude, to image with the counted objects undergoes an histogram equalization (using opencv's equalizeHist method), which makes the bubble more visible (mainly the first ones detected, since their colors were replaced by very low gray intensities).
 
 
+
 |----------------------+-------------------------------------|
 | Original image       | Edgless image and contoured bubbles |
 |----------------------+-------------------------------------|
@@ -80,7 +81,7 @@ These single-color images are then used to calculate the histogram of each color
 
 From the information of each color component's histogram, is calculated the accumulated histogram for each one of them, which is in turn used to equalized each color plane individually. After performing the equalization of each plane, the three of them are merged back into the original image. Here, as the original image has already been displayed on screen, there's no problem in overwriting it.
 
-A few more steps are necessary to plot the histogram graphs on top of the equalized image. First, I had to normalize each histogram to fit the size of the small plotting windows where it will be plotted. Here's how it's done:
+A few more steps are necessary to plot the histogram graphs on top of the equalized image. First, it is necessary to normalize each histogram to fit the size of the small plotting windows where it will be plotted. Here's how it's done:
 
 #+begin_src cpp
     cv::normalize(histR, histR, 0, histImgR.rows, cv::NORM_MINMAX, -1, cv::Mat());
@@ -88,4 +89,31 @@ A few more steps are necessary to plot the histogram graphs on top of the equali
     cv::normalize(histB, histB, 0, histImgB.rows, cv::NORM_MINMAX, -1, cv::Mat());
 #+end_src
 
+Then, the small plotting areas are set to black (lines 127 to 129) and the histograms are plotted on top of each one; there's a catch, though: as the origin of the coordinate system is on the top-left corner of the image, each bin needs to be drawn as a line going from the botttom up, as shown bellow) - this could be turned into a function for less code duplication.
 
+#+begin_src cpp
+  for(int i = 0; i < nbins; i++){
+    cv::line(histImgR,
+             cv::Point(i, histh),
+             cv::Point(i, histh-cvRound(histR.at<float>(i))),
+             cv::Scalar(0, 0, 255), 1, 8, 0);
+    cv::line(histImgG,
+             cv::Point(i, histh),
+             cv::Point(i, histh-cvRound(histG.at<float>(i))),
+             cv::Scalar(0, 255, 0), 1, 8, 0);
+    cv::line(histImgB,
+             cv::Point(i, histh),
+             cv::Point(i, histh-cvRound(histB.at<float>(i))),
+             cv::Scalar(255, 0, 0), 1, 8, 0);
+   }
+#+end_src
+
+After that, each histogram's plot is copied on top of the now-equalized image and the result is shon on screen. The user can stop the program by pressing the ESC key.
+
+Here's an example of the outputs of the program for a given frame.
+
+|-----------------------------------------------------------------|
+| Original image (left) / Equalized image with plotted histograms |
+|-----------------------------------------------------------------|
+| [[./figuras/equalized.png]]                                         |
+|-----------------------------------------------------------------|
