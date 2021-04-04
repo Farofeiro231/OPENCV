@@ -33,4 +33,10 @@ The last program in this section is the one in the /swap-regions.cpp/ file. As i
 | [[./figuras/Lenna.png]]  | [[./figuras/swapped-lenna.png]] |
 |----------------------+-----------------------------|
 
-* Histogram manipulation
+* Labeling
+This folder contains a simple program to detect and count the number of bubbles (or contiguous regions distinct from the background) in a figure. To observe its results (which are divided in three different output images) I used the same bubbles image as the one in the previous section. Here's how the program works:
+
+1) The user executes the program and passes an image file path as its argument;
+2) The image is either open correctly - and the algorithm moves to the next step - or not, in which case the execution ends;
+3) The image is then converted to a copy of itself in grayscale and displayed on screen, unaltered.
+
