@@ -64,8 +64,16 @@ The equalization program (/equalize.cpp/ inside the manip-histogram folder) perf
 
 The first procedure in the program is to initialize the VideoCapture object (named *cap*) on line 93 (after declaring all the other variables). If the video capture device cannot be open for whatever reason, the execution ends; however, if the device is available, the object has, then, connfigured its captured frames' height and width. On lines /110/ to /114/ are initialized the objects that will hold mini-plots of the current frame's histogram for each image (the red, blue and green histograms will, each, be displayed in a small rectangle on the top left corner of the captured image). Then, the program goes on the loop responsible for equalizing the incoming frame's histogram and showing both the original frame and the equalized version on screen.
 
-Once inside the loop, each frame has its histogram - for each color plane - normalized and histored in the *histR*, *histG*, and *histB* variables. This is done in the line 121:
+Once inside the loop, each frame has its histogram - for each color plane - normalized and histored in the *histR*, *histG*, and *histB* variables. This is done at line 121:
 
-#+begin_src cpp
+#+BEGIN_SRC CPP
   equalizeHistogram(image, planes, histR, histG, histB, nbins, histrange);
-#+end_src
+#+END_SRC
+
+The above function operates, then, splits the original image into three new images, each one containing only the information corresponding to a given color's intensity (for the red, the blue and the green colors).
+
+#+BEGIN_SRC CPP
+  cv::split(src, planes);
+#+END_SRC
+
+These single-color images are then used to calculate the histogram of each color component in the original image. However, the plot will reflect the histogram trend in a simplified manner, as having one bin for each intensity (rangin from 0 to 255) would create a very large plot over the current frame; hence, I chose to use 64 bins on the histogram plot to make it smaller. Therefore, the intensity jump from one bin to its neighboor is of 4 values (e.g.: red intensities from 0 to 3 will land on the same bin, but an intensity of 4 will be on the next bin).
