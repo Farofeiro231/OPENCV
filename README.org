@@ -60,4 +60,4 @@ This folder contains a simple program to detect and count the number of full and
 * Histogram manipulation
 Entering now the realm of more complex manipulations and starting to work with colored images, this portion of the activity handles histogram manipulations. The first program here performs a simple histogram equalization on an image, and the second one uses the differences on frames' histograms to detect motion in a video captured scene.
 ** Equalization
-
+The equalization program (/equalize.cpp/ inside the manip-histogram folder) performs an histogram equalization on the frames captured by the default video device on the computer, and display both the original video and its equalized version on-screen. The equalized version has, as predicted, a slight delay in comparison to the original video (as it has to perform a few operations on each frame before displaying them).
