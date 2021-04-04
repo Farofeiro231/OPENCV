@@ -76,4 +76,16 @@ The above function operates, then, splits the original image into three new imag
   cv::split(src, planes);  // src is the orignal image in the current frame and planes is an array of opencv matrices
 #+END_SRC
 
-These single-color images are then used to calculate the histogram of each color component in the original image. However, the plot will reflect the histogram trend in a simplified manner, as having one bin for each intensity (rangin from 0 to 255) would create a very large plot over the current frame; hence, I chose to use 64 bins on the histogram plot to make it smaller. Therefore, the intensity jump from one bin to its neighboor is of 4 values (e.g.: red intensities from 0 to 3 will land on the same bin, but an intensity of 4 will be on the next bin).
+These single-color images are then used to calculate the histogram of each color component in the original image. However, the plot will reflect the histogram trend in a simplified manner, as having one bin for each intensity (rangin from 0 to 255) would create a very large plot over the current frame; hence, I chose to use 64 bins on the histogram plot to make it smaller. Therefore, the intensity jump from one bin to its neighboor is of 4 values (e.g.: red intensities from 0 to 3 will land on the same bin, but an intensity of 4 will be in the next bin).
+
+From the information of each color component's histogram, is calculated the accumulated histogram for each one of them, which is in turn used to equalized each color plane individually. After performing the equalization of each plane, the three of them are merged back into the original image. Here, as the original image has already been displayed on screen, there's no problem in overwriting it.
+
+A few more steps are necessary to plot the histogram graphs on top of the equalized image. First, I had to normalize each histogram to fit the size of the small plotting windows where it will be plotted. Here's how it's done:
+
+#+begin_src cpp
+    cv::normalize(histR, histR, 0, histImgR.rows, cv::NORM_MINMAX, -1, cv::Mat());
+    cv::normalize(histG, histG, 0, histImgG.rows, cv::NORM_MINMAX, -1, cv::Mat());
+    cv::normalize(histB, histB, 0, histImgB.rows, cv::NORM_MINMAX, -1, cv::Mat());
+#+end_src
+
+
