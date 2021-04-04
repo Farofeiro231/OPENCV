@@ -39,4 +39,5 @@ This folder contains a simple program to detect and count the number of bubbles 
 1) The user executes the program and passes an image file path as its argument;
 2) The image is either open correctly - and the algorithm moves to the next step - or not, in which case the execution ends;
 3) The image is then converted to a copy of itself in grayscale and displayed on screen, unaltered.
+4) The grayscale copy of the image is then analyzed to have its edge objects removed (the objects touching one of the figure's four edges) - this is required since we cannot guarantee that edge objects are hollow of full, and we'll work on this later on -; therefore, all of the edge pixels are verified to look for white ones; if a white pixel is found, the OPENCV floodFill method is used to turn that whole bubble into a black one (making it disappear in the dark background);
 
