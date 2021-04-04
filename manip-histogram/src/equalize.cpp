@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------------------//
 // Author: Emanoel de Sousa Costa.															//
-// This code takes a black-and-white image as the input, calculates its histogram and		//
+// This code takes a colored image as the input, calculates its histogram and		//
 // performs an histogram equalization on the original image. The output is shown on screen. //
 //------------------------------------------------------------------------------------------//
 

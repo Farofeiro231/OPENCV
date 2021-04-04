@@ -56,3 +56,8 @@ This folder contains a simple program to detect and count the number of full and
 |-----------------------+-----------------------------------|
 | [[./figuras/counted.png]] | [[./figuras/counted-highlighted.png]] |
 |-----------------------+-----------------------------------|
+
+* Histogram manipulation
+Entering now the realm of more complex manipulations and starting to work with colored images, this portion of the activity handles histogram manipulations. The first program here performs a simple histogram equalization on an image, and the second one uses the differences on frames' histograms to detect motion in a video captured scene.
+** Equalization
+
