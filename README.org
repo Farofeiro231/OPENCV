@@ -44,3 +44,15 @@ This folder contains a simple program to detect and count the number of full and
 6) Then, the bubble are counted through the search of white pixels and the usage, once more, of the floodFill method: each found object is then counted (starting on zero) and its count number is used to replace its original gray intensity.
 7) To conclude, to image with the counted objects undergoes an histogram equalization (using opencv's equalizeHist method), which makes the bubble more visible (mainly the first ones detected, since their colors were replaced by very low gray intensities).
 
+
+|----------------------+-------------------------------------|
+| Original image       | Edgless image and contoured bubbles |
+|----------------------+-------------------------------------|
+| [[./figuras/bolhas.png]] | [[./figuras/edgeless-contoured.png]]    |
+|----------------------+-------------------------------------|
+
+|-----------------------+-----------------------------------|
+| Counted bubbled       | Counted and Highlighted bubbles   |
+|-----------------------+-----------------------------------|
+| [[./figuras/counted.png]] | [[./figuras/counted-highlighted.png]] |
+|-----------------------+-----------------------------------|
