@@ -154,6 +154,8 @@ These difference values are then compared with movement thresholds (set up befor
 * Space filtering
 In this section I start dealing with masks applied to images in the space domain (without using any kind of transformation such as Fourier's transform). The first portion of this exercise comprises a simple task: to add an LoG (Laplaciann of Guassian) filter to the program created by my professor. The file in question is the /spacefilter.cpp/ inside the *space-filtering* folder.
 
+** Laplacian-of-Gaussian filterinng
+
 The readers can try for themselves all of the filters in the program. To swap between filters, it suffices to hit the corresponding key after launching the program (e.g.: 'b' for the boost filter, or 'l' for the laplacian filter). The program works in a very simple manner: each filter's mask is pre-defined inside the main fuction as a float-array. Then, the program goes into a loop that waits for a key press and changnes the mask applied to the image accordingly. At the beginning of each loop, the original image is filtered through the application of the selected mask via the usage of opencv's filter2D method: it applies the mask as a kernel on the original image. The masks definition is shown bellow.
 
 #+begin_src cpp
