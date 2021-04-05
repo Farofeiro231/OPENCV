@@ -243,4 +243,21 @@ The *modify_mask* function, in its turn, starts by turning the mask into a black
    else
      lower_step = (1.0 / (mask.rows - focus_height)) * focus_intensity;
 #+end_src
+
 For each pixel within the mask's transition zone, hence, the grayscale intensity of the pixel is incresed, on the upper half, by the upper step, and decreased by the lower step in the lower half transition zone. To make sure the 255 limit for unsigned chars (the data type used for grayscale images - the type of our mask) is not exceeded, a test is conducted on each line of the mask's transition region to ensure each pixel's new value will be, at most, 255.
+
+After the creation of the mask according to the slider settings of the Mask window, there is the creation of what I called the /blended/ image; that is, the sum of the original image multiplied (element-wise) by the mask, with the blurred image multiplied (element-wise as well) by 1 - mask. This is performed in lines 127 to 133 of the code (as shown bellow).
+
+#+begin_src cpp
+  ...
+  imageBottom = image1.mul(mask * (1.0 / 255));
+
+  // When using the cv::Mat::ones method only the first channel is initialized to 1,
+  // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
+
+  imageTop = image2.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask * (1.0 / 255));
+  blended = imageTop + imageBottom;
+  cv::imshow("addweighted", blended);
+  }
+#+end_src
+

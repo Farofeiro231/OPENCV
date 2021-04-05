@@ -129,7 +129,7 @@ void mask_control(int, void*)
   // When using the cv::Mat::ones method only the first channel is initialized to 1,
   // therefore I need to initialize the other two myself. I used an ordinary initialization instead.
 
-  imageTop = image2.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask * (1.0 / 255));//cv::multiply(mask, mask*(1.0/255), blended);
+  imageTop = image2.mul(cv::Mat(mask.rows, mask.cols, CV_8UC3, CV_RGB(1, 1, 1)) - mask * (1.0 / 255));
   blended = imageTop + imageBottom;
   cv::imshow("addweighted", blended);
 }
