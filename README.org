@@ -217,3 +217,14 @@ Now, let's see how the algorithm works. At first, two image objects are created:
 #+begin_src cpp
   average_filter(image1, image2);
 #+end_src
+
+Then, from lines 164 to 196, are created the sliders used in both windows. Here is introduced the important part: each slider has a function that is called whenever the slider's value is modified; for the mask's window sliders, the function is the same for all three sliders: the *mask_control* function.
+
+The *mask_control* function does exactly what its name suggests, as it controls the mask behavior and updates the mask (maybe it would be better named as *mask_update*, or even *outcome_update*, as that what it does ultimately). Inside this function, the first action is perform by another function, the *modify_mask* function; that's the one, precisely, that modifies and updates the mask.
+
+#+begin_src cpp
+  void mask_control(int, void*)
+  {
+    modify_mask(mask);
+    ...
+#+end_src
