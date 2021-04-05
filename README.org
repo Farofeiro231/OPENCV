@@ -204,10 +204,16 @@ This program (/addweighted.cpp/) performs a transformation on the image similar 
 
 Now, let me explain how the program works. Its basic structure was provided to me by the course's professor, but it was properly modified and expanded to account for the desired transformation. The original program performed a superposition of an image with its transformed version after an average filtering. It had two control sliders: one to control the transparency (alpha) of the superposed image (the blurred one); the other to control the height until which the blurred image would be seen on top of the original one (this is called scanline). In the same window the user could see the output image and the controlling sliders.
 
-The modified program, built on top of that one, has kept the origiannl sliders simply for the user to be able to see the old effect applied to the image; however, it had a few features added to produce the tilt-shift effect. The first noticeable change is the addition of a second visualization window (as shown in  the figure below): it allows the user to control, via three sliders (height, width and intensity) the positioning of the tilt-shift mask's center, as well as its width and decay intensity around the borders; the user can see, in real time, the mask produced by changing each slider.
+The modified program, built on top of that one, has kept the origiannl sliders simply for the user to be able to see the old effect applied to the image; however, it had a few features added to produce the tilt-shift effect. The first noticeable change is the addition of a second visualization window (as shown in  the figure below): it allows the user to control, via three sliders (height, width and intensity) the positioning of the tilt-shift mask's center, as well as its width and decay intensity around the borders; the user can see, in real time, the mask produced by changing each slider. To exit the program, the user simply presses the ESC key.
 
 |----------------------------+---------------------------------------|
 | Output image window        | Mask control and visualization window |
 |----------------------------+---------------------------------------|
 | [[./figuras/output-image.png]] | [[./figuras/mask.png]]                    |
 |----------------------------+---------------------------------------|
+
+Now, let's see how the algorithm works. At first, two image objects are created: *image1* and *image2*. The former is created from the opening of the image file defined in the code, and the latter is created after applying an average filter onto the original image.
+
+#+begin_src cpp
+  average_filter(image1, image2);
+#+end_src
