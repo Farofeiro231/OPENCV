@@ -121,7 +121,6 @@ void average_filter(cv::Mat &src, cv::Mat &destination_img)
 cv::Mat& modify_frame(cv::Mat &original_frame)
 {
   static cv::Mat averaged_frame;
-  static cv::Mat temp;
   static cv::Mat reverse_mask;
   
   reverse_mask = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)) - mask;
@@ -144,7 +143,7 @@ void mask_control(int, void*)
   cv::Mat new_mat = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)) - mask;
   cv::Mat reverse_mask = cv::Mat(mask.rows, mask.cols, CV_8UC3, cv::Scalar(255, 255, 255)).mul((new_mat * (1.0 / 255)));
   cv::imshow("Mask", mask);
-  cv::imshow("Mask teste", reverse_mask);
+  cv::imshow("Reverse mask", reverse_mask);
 }
 
 
