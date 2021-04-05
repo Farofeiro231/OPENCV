@@ -115,7 +115,7 @@ Here's an example of the outputs of the program for a given frame. The equalizat
 |-----------------------------------------------------------------|
 | Original image (left) / Equalized image with plotted histograms |
 |-----------------------------------------------------------------|
-| [[./figuras/equalized.png]]                                         |
+| [[./figuras/equalized_book.png]]                                    |
 |-----------------------------------------------------------------|
 
 ** Histogram-based motion detector
