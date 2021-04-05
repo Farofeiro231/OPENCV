@@ -153,3 +153,36 @@ These difference values are then compared with movement thresholds (set up befor
 
 * Space filtering
 In this section I start dealing with masks applied to images in the space domain (without using any kind of transformation such as Fourier's transform). The first portion of this exercise comprises a simple task: to add an LoG (Laplaciann of Guassian) filter to the program created by my professor. The file in question is the /spacefilter.cpp/ inside the *space-filtering* folder.
+
+The readers can try for themselves all of the filters in the program. To swap between filters, it suffices to hit the corresponding key after launching the program (e.g.: 'b' for the boost filter, or 'l' for the laplacian filter). The program works in a very simple manner: each filter's mask is pre-defined inside the main fuction as a float-array. Then, the program goes into a loop that waits for a key press and changnes the mask applied to the image accordingly. At the beginning of each loop, the original image is filtered through the application of the selected mask via the usage of opencv's filter2D method: it applies the mask as a kernel on the original image. The masks definition is shown bellow.
+
+#+begin_src cpp
+  float media[] = {0.1111, 0.1111, 0.1111, 0.1111, 0.1111,
+                   0.1111, 0.1111, 0.1111, 0.1111};
+  float gauss[] = {0.0625, 0.125,  0.0625, 0.125, 0.25,
+                   0.125,  0.0625, 0.125,  0.0625};
+  float vertical[] = {-1, 0, 1, -2, 0, 2, -1, 0, 1};
+  float horizontal[] = {-1, -2, -1, 0, 0, 0, 1, 2, 1};
+  float laplacian[] = {0, -1, 0,
+                       -1, 4, -1,
+                       0, -1, 0};
+  float boost[] = {0, -1, 0,
+                   -1, 5.2, -1,
+                   0, -1, 0};
+  float LoG[] = {0, 0, 1, 0, 0,
+                 0, 1, 2, 1, 0,
+                 1, 2, -16, 2, 1,
+                 0, 1, 2, 1, 0,
+                 0, 0, 1, 0, 0};
+#+end_src
+
+To implement the Laplacian-of-Gaussian filter, I simply used this widely known mask and added another option for the the case selection inside the main loop.
+
+#+begin_src cpp
+  case 'p':
+  // The performance of the LoG is further improved by filtering it
+  // with the average mask afterwards.
+  mask = cv::Mat(5, 5, CV_32F, LoG);
+  printmask(mask);
+  break;
+#+end_src
