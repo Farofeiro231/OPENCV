@@ -188,3 +188,12 @@ To implement the Laplacian-of-Gaussian filter, I simply used this widely known m
   printmask(mask);
   break;
 #+end_src
+
+The images bellow show a comparison between the Laplacian and the LoG filters applied to the book image. As we can see, the LoG filter sharpens the contours of the image at the cost of being more sensitive to noise.
+
+
+|-------------------------+--------------------|
+| Guassian-filtered image | LoG-filtered image |
+|-------------------------+--------------------|
+| [[./figuras/laplacian.png]] | [[./figuras/log.png]]  |
+|-------------------------+--------------------|
