@@ -225,13 +225,18 @@ int main(int argvc, char** argv){
 
   // Waits forever for a keypress; when it happens, it either exits the program or writes the new
   // video file. To exit the program, press ESC; to write the video file, press SPACEBAR.
-  char c = (char) cv::waitKey(0);
-  if (c == 27) {
-	video.release();
-	return 0;
-  } else if (c == 32) {
-	modify_video(video);
-	video.release();
-	return 0;
+  char c;
+  while (1) {
+	c = (char) cv::waitKey(0);
+	if (c == 27) {
+	  video.release();
+	  break;
+	} else if (c == 32) {
+	  modify_video(video);
+	  video.release();
+	  break;
+	}
   }
+
+  return 0;
 }
