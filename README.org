@@ -150,3 +150,6 @@ These difference values are then compared with movement thresholds (set up befor
 |-------------------------------|
 | [[./figuras/motion-detected.png]] |
 |-------------------------------|
+
+* Space filtering
+In this section I start dealing with masks applied to images in the space domain (without using any kind of transformation such as Fourier's transform). The first portion of this exercise comprises a simple task: to add an LoG (Laplaciann of Guassian) filter to the program created by my professor. The file in question is the /spacefilter.cpp/ inside the *space-filtering* folder.
