@@ -110,10 +110,20 @@ Then, the small plotting areas are set to black (lines 127 to 129) and the histo
 
 After that, each histogram's plot is copied on top of the now-equalized image and the result is shon on screen. The user can stop the program by pressing the ESC key.
 
-Here's an example of the outputs of the program for a given frame.
+Here's an example of the outputs of the program for a given frame. The equalization effect is most useful when the environment in which the pictures are taken is either too bright or too dark.
 
 |-----------------------------------------------------------------|
 | Original image (left) / Equalized image with plotted histograms |
 |-----------------------------------------------------------------|
 | [[./figuras/equalized.png]]                                         |
 |-----------------------------------------------------------------|
+
+** Histogram-based motion detector
+
+This program is based on the previous one (the equalization program), hence, most of it works just as the the other. The difference here, however, is this: two frames are kept at a time, and their histograms are compared to verify if there are any important discrepancies; if that's the case, a red dot appears on the screen's bottom-right corner to indicate that motion has been detected.
+
+#+begin_src cpp
+  // Two images are kept at once.
+  cap >> image_t;
+  cap >> image_t_plus;
+#+end_src
