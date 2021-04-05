@@ -127,3 +127,26 @@ This program is based on the previous one (the equalization program), hence, mos
   cap >> image_t;
   cap >> image_t_plus;
 #+end_src
+
+To detect any motion, the bellow function (whose name is very suggestive) is used.
+
+#+begin_src cpp
+  detect_motion(image_t, image_t_plus, planes, nbins, histrange);
+#+end_src
+
+It takes the image at instant /t/ and the image at /t + 1/ and compared their histograms. Inside the function, both frames are split into three images containing, each, a single color component (just as was done for the equalization function). Then, another function called /histogram_diff/ is used to calculate the maximum difference for each color component between the two frames.
+
+#+begin_src cpp
+  hist_max[0] = histogram_diff(histB, histB_plus);
+  hist_max[1] = histogram_diff(histG, histG_plus);
+  hist_max[2] = histogram_diff(histR, histR_plus);
+#+end_src
+
+These difference values are then compared with movement thresholds (set up beforehand) to check for any movement; if any one of them is higher than the given threshold, the red dot is printed on screen to indicate the detection. The bellow image shows an instant where I quickly moved the book to prompt the motion detection.
+
+
+|-------------------------------|
+| Motion detected               |
+|-------------------------------|
+| [[./figuras/motion-detected.png]] |
+|-------------------------------|
