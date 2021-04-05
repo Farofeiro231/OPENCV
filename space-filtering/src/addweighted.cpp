@@ -53,7 +53,6 @@ void modify_mask(cv::Mat &mask)
   else
 	upper_step = (1.0 / focus_height) * focus_intensity;
    
-  // lower_step =  (1.0/(mask.rows - (focus_height + focus_width/2.0))) * focus_intensity;
   if ((focus_height + focus_width / 2.0) <= mask.rows)
 	lower_step = (1.0 / (focus_width / 2.0)) * focus_intensity;
   else
@@ -67,10 +66,6 @@ void modify_mask(cv::Mat &mask)
   int upper_boundary = std::min(focus_height + focus_width/2, mask.rows);
   int k = 0;
   for (int i = 0; i < mask.rows; i++) {
-	// The loop actually goes 3 times through i = n, because the image
-	// has 3 color channels; hence, I need to reset the increment value each time,
-	// otherwise it will show stripes on screen due to the resetting of the uchar
-	// value inside the image.
 	if (i > lower_boundary && i < focus_height) {
 	  upper_val[0] += upper_step;
 	  upper_val[1] += upper_step;

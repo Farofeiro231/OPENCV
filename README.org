@@ -229,4 +229,18 @@ The *mask_control* function does exactly what its name suggests, as it controls 
     ...
 #+end_src
 
-The *modify_mask* function, in its turn, starts by turning the mask into a black image upon which the final mask will be drawn. It then calculates the increment step, based on the width of the transition regions (one for the pixels above the focus height, and other for those below it) or the remaining pixels until the corresponding end of the image (whichever is lower, as this is needed to prevent odd behaviors when the the combination of height and width makes the end of the transition region outside of the image's limits). For each pixel within the mask's transition zone, hence, the grayscale intensity of the pixel is incresed, on the upper half, by the upper step, and decreased by the lower step in the lower half transition zone. To make sure the 255 limit for unsigned chars (the data type used for grayscale images - the type of our mask) is not exceeded, a test is conducted on each line of the mask's transition region to ensure each pixel's new value will be, at most, 255.
+The *modify_mask* function, in its turn, starts by turning the mask into a black image upon which the final mask will be drawn. It then calculates the increment step, based on the width of the transition regions (one for the pixels above the focus height, and other for those below it) or the remaining pixels until the corresponding end of the image (whichever is lower, as this is needed to prevent odd behaviors when the the combination of height and width makes the end of the transition region outside of the image's limits).
+
+#+begin_src cpp
+  // Determining the upper and lower steps
+  if ((focus_height - focus_width / 2.0) >=0)
+    upper_step =  (1.0 / (focus_width / 2.0)) * focus_intensity;
+   else
+     upper_step = (1.0 / focus_height) * focus_intensity;
+
+  if ((focus_height + focus_width / 2.0) <= mask.rows)
+    lower_step = (1.0 / (focus_width / 2.0)) * focus_intensity;
+   else
+     lower_step = (1.0 / (mask.rows - focus_height)) * focus_intensity;
+#+end_src
+For each pixel within the mask's transition zone, hence, the grayscale intensity of the pixel is incresed, on the upper half, by the upper step, and decreased by the lower step in the lower half transition zone. To make sure the 255 limit for unsigned chars (the data type used for grayscale images - the type of our mask) is not exceeded, a test is conducted on each line of the mask's transition region to ensure each pixel's new value will be, at most, 255.
