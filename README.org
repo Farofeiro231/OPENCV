@@ -199,4 +199,9 @@ The images bellow show a comparison between the Laplacian and the LoG filters ap
 |-------------------------+--------------------|
 
 ** Image tilt-shifting
-This program (/addweighted.cpp/) performs a transformation on the image similar to the tilt-shift technique used by photographers to blurry selected regions of an image. This effect is also used to create miniature-like versions of pictures. Normally, this effect is produced with the help of special lenses; nevertheless, it can be easily reproduced by the use of some digital image processing techniques.
+
+This program (/addweighted.cpp/) performs a transformation on the image similar to the tilt-shift technique used by photographers to blurry selected regions of an image. This effect is also used to create miniature-like versions of pictures. Normally, this effect is produced with the help of special lenses; nevertheless, it can be easily reproduced by the use of some digital image processing techniques. The output image after the application of the transformation and an image with a region under focus, and the surrounding areas blurred.
+
+Now, let me explain how the program works. Its basic structure was provided to me by the course's professor, but it was properly modified and expanded to account for the desired transformation. The original program performed a superposition of an image with its transformed version after an average filtering. It had two control sliders: one to control the transparency (alpha) of the superposed image (the blurred one); the other to control the height until which the blurred image would be seen on top of the original one (this is called scanline). In the same window the user could see the output image and the controlling sliders.
+
+The modified program, built on top of that one, has kept the origiannl sliders simply for the user to be able to see the old effect applied to the image; however, it has added functionnalities to produce the tilt-shift effect.
