@@ -197,3 +197,5 @@ The images bellow show a comparison between the Laplacian and the LoG filters ap
 |-------------------------+--------------------|
 | [[./figuras/laplacian.png]] | [[./figuras/log.png]]  |
 |-------------------------+--------------------|
+
+** Image tilt-shifting
