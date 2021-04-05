@@ -322,3 +322,12 @@ The *modify_frame* function tackles the work of applying the tilt-shift effect t
     return blended;
   }
 #+end_src
+
+To conclude, when the user has obtained the desired mask (which can be seen, both it and its reverse counterpart, on screen - a new window has been added to displaye the reverse mask), it suffices to hit the SPACEBAR key to begin the modified video's generation process. Once it's done the program will free all allocated video objects and close itself.
+
+
+|---------------------------+-----------------------------------|
+| Mask visualization window | Reverse mask visualization window |
+|---------------------------+-----------------------------------|
+| [[./figuras/video-mask.png]]  | [[./figuras/reverse-mask.png]]        |
+|---------------------------+-----------------------------------|
