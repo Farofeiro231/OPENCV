@@ -263,5 +263,5 @@ After the creation of the mask according to the slider settings of the Mask wind
 
 ** Video tilt-shifting
 
-The last program of this section is the result of a slight modification in the previous one. The goal is no longer to apply the tilt-shift effect to a single image, but rather to every frame of a video file. The program here described is contained in the *space-filtering/video_manip.cpp* file.
+The last program of this section is the result of a slight modification in the previous one. The goal is no longer to apply the tilt-shift effect to a single image, but rather to every frame of a video file. The program here described is contained in the *space-filtering/src/video_manip.cpp* file.
 
