@@ -195,6 +195,11 @@ int main(int argvc, char** argv){
                       mask_control);
   mask_control(intensity_slider, 0);
 
-  cv::waitKey(0);
+  while (1) {
+	char c = (char) cv::waitKey(0);
+	if (c == 27)
+	  break;
+  }
+
   return 0;
 }
