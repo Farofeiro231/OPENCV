@@ -14,8 +14,11 @@ using namespace std;
 using namespace cv;
 
 #define STEP 5
+#define EDGE_STEP 2
 #define JITTER 3
-#define RAIO 3
+#define EDGE_JITTER 1
+#define RAIO 4
+#define EDGE_RAIO 2
 
 int top_slider = 10;
 int top_slider_max = 200;
