@@ -5,9 +5,9 @@
 #include <vector>
 
 #define RADIUS 30
-#define HOMO_C 0.5
+#define HOMO_C 2
 #define GAMMA_L 5
-#define GAMMA_H 15
+#define GAMMA_H 60
 
 void on_trackbar_frequency(int, void*) {}
 
@@ -184,6 +184,8 @@ int main(int, char**) {
 	  tmp_homo.at<float>(i, j) = ((GAMMA_H - GAMMA_L) * (1 - exp(-HOMO_C * (d_u_v_squared / (RADIUS * RADIUS)))) + GAMMA_L) / ((GAMMA_H - GAMMA_L) + GAMMA_L);
 	}
   }
+
+  cv::imshow("homo filter", tmp_homo);
 
   // cria a matriz com as componentes do filtro homomorfico e junta
   // ambas em uma matriz multicanal complexa
