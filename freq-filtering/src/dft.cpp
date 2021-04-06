@@ -1,8 +1,13 @@
 #include <iostream>
+#include <math.h>
+#include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 #include <vector>
 
 #define RADIUS 20
+#define HOMO_C 1
+#define GAMMA_L 5
+#define GAMMA_H 10
 
 void on_trackbar_frequency(int, void*) {}
 
@@ -12,6 +17,7 @@ void menu() {
   std::cout << "e : habilita/desabilita interferencia\n"
                "m : habilita/desabilita o filtro mediano\n"
                "g : habilita/desabilita o filtro gaussiano\n"
+               "h : habilita/desabilita o filtro homomórfico\n"
                "p : realiza uma amostra das imagens\n"
                "s : habilita/desabilita subtração de fundo\n"
                "b : realiza uma amostra do fundo da cena\n"
@@ -50,8 +56,8 @@ void deslocaDFT(cv::Mat& image) {
 int main(int, char**) {
   cv::VideoCapture cap;
   cv::Mat imaginaryInput, complexImage, multsp;
-  cv::Mat padded, filter, mag;
-  cv::Mat image, imagegray, tmp, magI;
+  cv::Mat padded, filter, filter_homo, mag;
+  cv::Mat image, imagegray, tmp, tmp_homo, magI;
   cv::Mat_<float> realInput, zeros, ones;
   cv::Mat backgroundImage;
   std::vector<cv::Mat> planos;
@@ -70,6 +76,8 @@ int main(int, char**) {
   bool median = false;
   // habilita o filtro gaussiano
   bool gaussian = false;
+  // habilita o filtro homomorfico
+  bool homomorphic = false;
   // habilita o negativo da imagem
   bool negative = false;
 
@@ -104,7 +112,8 @@ int main(int, char**) {
   cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
   cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 
-  if (!cap.isOpened()) return -1;
+  if (!cap.isOpened())
+	return -1;
 
   // captura uma imagem para recuperar as
   // informacoes de gravação
@@ -163,6 +172,24 @@ int main(int, char**) {
   cv::Mat comps[] = {tmp, tmp};
   cv::merge(comps, 2, filter);
 
+
+  // Repetição do procedimento acima para a criação da matriz homomófica.
+  tmp_homo = cv::Mat(dft_M, dft_N, CV_32F);
+  float d_u_v_squared = 0;
+
+  // Criação do filtro homomórfico usando os parâmetros c, gamma_L, gamma_H e RADIUS
+  for (int i = 0; i < dft_M; i++) {
+    for (int j = 0; j < dft_N; j++) {
+	  d_u_v_squared = (i - dft_M / 2.0) * (i - dft_M / 2.0) + (j - dft_N / 2.0) * (j - dft_N / 2.0);
+	  tmp_homo.at<float>(i, j) = (GAMMA_H - GAMMA_L) * (1 - exp(-HOMO_C * (d_u_v_squared / (RADIUS * RADIUS)))) + GAMMA_L;
+	}
+  }
+
+  // cria a matriz com as componentes do filtro homomorfico e junta
+  // ambas em uma matriz multicanal complexa
+  cv::Mat comps_homo[] = {tmp_homo, tmp_homo};
+  cv::merge(comps_homo, 2, filter_homo);
+
   for (;;) {
     cap >> image;
     cv::cvtColor(image, imagegray, cv::COLOR_BGR2GRAY);
@@ -186,6 +213,7 @@ int main(int, char**) {
       cv::GaussianBlur(imagegray, image, cv::Size(3, 3), 0);
       image.copyTo(imagegray);
     }
+
     cv::imshow("original", imagegray);
 
     // realiza o padding da imagem
@@ -241,10 +269,14 @@ int main(int, char**) {
       }
     }
 
-    // aplica o filtro de frequencia
-    cv::mulSpectrums(complexImage, filter, complexImage, 0);
+    // aplica o filtro de frequencia: a variável filter é um filtro
+	// ideal com componentes reais e imaginárias iguais.
+	if (!homomorphic)
+	  cv::mulSpectrums(complexImage, filter, complexImage, 0);
+	else
+	  cv::mulSpectrums(complexImage, filter_homo, complexImage, 0);
 
-    // limpa o array de planos
+	// limpa o array de planos
     planos.clear();
 
     // separa as partes real e imaginaria para modifica-las
@@ -314,6 +346,9 @@ int main(int, char**) {
         break;
       case 'n':
         negative = !negative;
+        break;
+      case 'h':
+        homomorphic = !homomorphic;
         break;
     }
   }
