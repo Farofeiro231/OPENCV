@@ -370,4 +370,4 @@ To perform the homomorphic filtering, another filter matrix was created (*filter
 
 This filter's creation is based on the following version of the Gaussian filter; it's meant to attenuate lower frequencies (thus to remove disparities in illuminance) and keep higher frequencies untouched (ideally).
 
-[[fig:./figuras/homo-equation.png]]
+[[./figuras/homo-equation.png]]
