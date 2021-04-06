@@ -372,7 +372,7 @@ This filter's creation is based on the following version of the Gaussian filter;
 
 [[./figuras/homo-equation.png]]
 
-In the above equation, four parameters are used to control the behavior of the filter: $\gamma_{L}$, $\gamma_{H}$, c and $D_{0}$. After a few attempts to find their best combination, I've settled for the following values. The radius ($D_{0}$) controls the size of the atenuation region, the gammas control the size of the transition region, and the *c* controls the intensity of the transition.
+In the above equation, four parameters are used to control the behavior of the filter: \gamma_{L}, \gamma_{H}, c and D_{0}. After a few attempts to find their best combination, I've settled for the following values. The radius (D_{0}) controls the size of the atenuation region, the gammas control the size of the transition region, and the *c* controls the intensity of the transition.
 
 #+begin_src cpp
   #define RADIUS 30
