@@ -4,10 +4,10 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-#define RADIUS 20
-#define HOMO_C 1
+#define RADIUS 30
+#define HOMO_C 0.5
 #define GAMMA_L 5
-#define GAMMA_H 10
+#define GAMMA_H 15
 
 void on_trackbar_frequency(int, void*) {}
 
@@ -181,7 +181,7 @@ int main(int, char**) {
   for (int i = 0; i < dft_M; i++) {
     for (int j = 0; j < dft_N; j++) {
 	  d_u_v_squared = (i - dft_M / 2.0) * (i - dft_M / 2.0) + (j - dft_N / 2.0) * (j - dft_N / 2.0);
-	  tmp_homo.at<float>(i, j) = (GAMMA_H - GAMMA_L) * (1 - exp(-HOMO_C * (d_u_v_squared / (RADIUS * RADIUS)))) + GAMMA_L;
+	  tmp_homo.at<float>(i, j) = ((GAMMA_H - GAMMA_L) * (1 - exp(-HOMO_C * (d_u_v_squared / (RADIUS * RADIUS)))) + GAMMA_L) / ((GAMMA_H - GAMMA_L) + GAMMA_L);
 	}
   }
 
