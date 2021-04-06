@@ -20,7 +20,7 @@ using namespace cv;
 #define JITTER 3
 #define EDGE_JITTER 1
 #define RAIO 3
-#define EDGE_RAIO 1
+#define EDGE_RAIO 2
 
 int top_slider = 10;
 int top_slider_max = 200;
