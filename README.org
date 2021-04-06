@@ -335,4 +335,39 @@ To conclude, when the user has obtained the desired mask (which can be seen, bot
 * Frequency filtering
 In this section I'll explain the programs contained in the freq-filtering folder, which are all based on transformations using an image's Fourier transform. The first program comprises an homomorphic filter destined to reduced the effect of bad lighting on captured scenes. The second one is used to create a "dotted" (from the dotillistic painting style) image from its original version.
 ** Homomorphic filter
-This program is contained in the /dft.cpp/ file, and it was built by performing a simple modification to the original file provided by my professor (most of the original files used here are available at [[https://agostinhobritojr.github.io/tutorial/pdi/][Agostinho's Github.io]]). The original file already had in it the implementation for all of the other filters (gaussian, median etc.)
+This program is contained in the /dft.cpp/ file, and it was built by performing a simple modification to the original file provided by my professor (most of the original files used here are available at [[https://agostinhobritojr.github.io/tutorial/pdi/][Agostinho's Github.io]]). The original file already had in it the implementation for all of the other filters (gaussian, median etc.) and frequency-based image manipulations. The idea behind this program was to add a functionnality to apply an homomorphic filter on each frame of the captured image (the default video - 0 - capture device is used here).
+
+The first thing modified was the user interaction menu, to which was added the << /h/ >> option, allowing the user to apply the homomorphic filter to the incoming frames.
+
+#+begin_src cpp
+  void menu() {
+    std::cout << "e : habilita/desabilita interferencia\n"
+      "m : habilita/desabilita o filtro mediano\n"
+      "g : habilita/desabilita o filtro gaussiano\n"
+      "h : habilita/desabilita o filtro homomórfico\n"
+      "p : realiza uma amostra das imagens\n"
+      "s : habilita/desabilita subtração de fundo\n"
+      "b : realiza uma amostra do fundo da cena\n"
+      "n : processa o negativo\n";
+  }
+#+end_src
+
+Another boolean variable called *homomorphic* was created to be toggled when the user presses the << /h/ >> key. This is done on line 80 of the file.
+
+#+begin_src cpp
+  // habilita o filtro homomorfico
+  bool homomorphic = false;
+#+end_src
+
+To perform the homomorphic filtering, another filter matrix was created (*filter_homo*) sized with the optimal dimensions calculated at lines 124 and 125.
+
+#+begin_src cpp
+  // identifica os tamanhos otimos para
+  // calculo do FFT
+  dft_M = cv::getOptimalDFTSize(image.rows);
+  dft_N = cv::getOptimalDFTSize(image.cols);
+#+end_src
+
+This filter's creation is based on the following version of the Gaussian filter; it's meant to attenuate lower frequencies (thus to remove disparities in illuminance) and keep higher frequencies untouched (ideally).
+
+[[fig:./figuras/homo-equation.png]]
