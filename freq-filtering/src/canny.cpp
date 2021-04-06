@@ -14,9 +14,9 @@ char TrackbarName[50];
 Mat image, border;
 
 void on_trackbar_canny(int, void*){
-  Canny(image, border, top_slider, 3*top_slider);
+  Canny(image, border, top_slider, 3 * top_slider);
+  cv::normalize(border, border, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
   std::cout << "Border: " << border << std::endl;
-  cv::normalize(border, border, 0, border.rows, cv::NORM_MINMAX, -1, cv::Mat());
   imshow("canny", border);
 }
 
