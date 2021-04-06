@@ -19,8 +19,8 @@ using namespace cv;
 #define EDGE_STEP 2
 #define JITTER 3
 #define EDGE_JITTER 1
-#define RAIO 4
-#define EDGE_RAIO 2
+#define RAIO 3
+#define EDGE_RAIO 1
 
 int top_slider = 10;
 int top_slider_max = 200;
@@ -100,6 +100,7 @@ cv::Mat edge_dotilism(cv::Mat& image){
 
   Canny(image, border, top_slider, 3 * top_slider);
   cv::normalize(border, border, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
+  border_image = image.mul(border);
   
   for(uint i=0; i<xrange.size(); i++){
 	xrange[i]= xrange[i]*STEP+STEP/2;
@@ -116,8 +117,8 @@ cv::Mat edge_dotilism(cv::Mat& image){
   for(auto i : xrange) {
 	random_shuffle(yrange.begin(), yrange.end());
 	for(auto j : yrange) {
-	  x = i+rand()%(2*JITTER)-JITTER+1;
-	  y = j+rand()%(2*JITTER)-JITTER+1;
+	  x = i+rand()%(2*EDGE_JITTER)-EDGE_JITTER+1;
+	  y = j+rand()%(2*EDGE_JITTER)-EDGE_JITTER+1;
 	  gray = image.at<uchar>(x,y);
 	  circle(points,
 			 cv::Point(y,x),
@@ -128,13 +129,11 @@ cv::Mat edge_dotilism(cv::Mat& image){
 	}
   }
 
-  new_image = border_image.mul(border);
-
-  for (int i = 0; i < new_image.rows; i++) {
-	for (int j = 0; j < new_image.cols; j++) {
-	  if (new_image.at<uchar>(i, j) != 0) {
-		gray = new_image.at<uchar>(i, j);
-		circle(points, cv::Point(j, x), EDGE_RAIO, CV_RGB(gray, gray, gray), -1, LINE_AA);
+  for (int i = 0; i < border_image.rows; i++) {
+	for (int j = 0; j < border_image.cols; j++) {
+	  if (border_image.at<uchar>(i, j) != 0) {
+		gray = border_image.at<uchar>(i, j);
+		circle(points, cv::Point(j, i), EDGE_RAIO, CV_RGB(gray, gray, gray), -1, LINE_AA);
 	  }
 	}
   }
@@ -148,7 +147,7 @@ void on_trackbar_canny(int, void*){
   Canny(image, border, top_slider, 3 * top_slider);
   // cv::normalize(border, border, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
   std::cout << "Border: " << border << std::endl;
-  art = dotilism(image);
+  art = edge_dotilism(image);
   // imshow("canny", image.mul(border));
   imshow("canny", art + border);
 }
@@ -172,7 +171,13 @@ int main(int argc, char**argv){
 
   on_trackbar_canny(top_slider, 0 );
 
-  waitKey();
+  char c = (char) waitKey();
+  while (1) {
+	c = waitKey(0);
+	if (c == 27)
+	  break;
+  }
+
   imwrite("cannyborders.png", border);
   return 0;
 }
