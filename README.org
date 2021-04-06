@@ -380,3 +380,42 @@ In the above equation, four parameters are used to control the behavior of the f
   #define GAMMA_L 5
   #define GAMMA_H 60
 #+end_src
+
+After creating the filter's matrix, another auxilliary matrix was created to hold a single plane of the filter (since the filter has two channels: one for its real and another one for its complex component). This auxilliary matrix is then filled with values according to the homomorphic equation, considering the origin of the image spectrum to be at the center of the image (due to some manipulations performed on the image beforehand). This procedure is performed in the lines below (lines 177 to 189 of the original file).
+
+#+begin_src cpp
+  // Repetição do procedimento acima para a criação da matriz homomófica.
+  tmp_homo = cv::Mat(dft_M, dft_N, CV_32F);
+  float d_u_v_squared = 0;
+
+  // Criação do filtro homomórfico usando os parâmetros c, gamma_L, gamma_H e RADIUS
+  for (int i = 0; i < dft_M; i++) {
+    for (int j = 0; j < dft_N; j++) {
+      d_u_v_squared = (i - dft_M / 2.0) * (i - dft_M / 2.0) + (j - dft_N / 2.0) * (j - dft_N / 2.0);
+      // tmp_homo.at<float>(i, j) = ((GAMMA_H - GAMMA_L) * (1 - exp(-HOMO_C * (d_u_v_squared / (RADIUS * RADIUS)))) + GAMMA_L) / ((GAMMA_H - GAMMA_L) + GAMMA_L);
+      tmp_homo.at<float>(i, j) = ((GAMMA_H - GAMMA_L) * (1 - exp(-HOMO_C * (d_u_v_squared / (RADIUS * RADIUS)))) + GAMMA_L);
+    }
+   }
+  cv::normalize(tmp_homo, tmp_homo, 0, 1, cv::NORM_MINMAX);
+#+end_src
+
+The *d_u_v_squared* hold the squared distance of the current point in the filter's matrix to its center. It's important to note that all values applied to the filter elements are normalized between 0 and 1.
+
+Finally, if the homomorphic filtering has been toggled by the user, the homomorphic filter will be used instead of the ideal filter.
+
+#+begin_src cpp
+  // aplica o filtro de frequencia: a variável filter é um filtro
+  // ideal com componentes reais e imaginárias iguais.
+  if (!homomorphic)
+    cv::mulSpectrums(complexImage, filter, complexImage, 0);
+   else
+     cv::mulSpectrums(complexImage, filter_homo, complexImage, 0);
+#+end_src
+
+At this point, the image has already been filtered and we're ready to perform the inverse transformation in order to obtain its space-domain filtered version. The results of the filtering applied to an image of a book with strong direct lighting is seen bellow.
+
+|-----------------------------+-----------------------------|
+| Original imagem             | Homomorphic-filtered image  |
+|-----------------------------+-----------------------------|
+| [[./figuras/homo_original.png]] | [[./figuras/homo-filtered.png]] |
+|-----------------------------+-----------------------------|
