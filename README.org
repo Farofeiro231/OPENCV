@@ -331,3 +331,8 @@ To conclude, when the user has obtained the desired mask (which can be seen, bot
 |---------------------------+-----------------------------------|
 | [[./figuras/video-mask.png]]  | [[./figuras/reverse-mask.png]]        |
 |---------------------------+-----------------------------------|
+
+* Frequency filtering
+In this section I'll explain the programs contained in the freq-filtering folder, which are all based on transformations using an image's Fourier transform. The first program comprises an homomorphic filter destined to reduced the effect of bad lighting on captured scenes. The second one is used to create a "dotted" (from the dotillistic painting style) image from its original version.
+** Homomorphic filter
+This program is contained in the /dft.cpp/ file, and it was built by performing a simple modification to the original file provided by my professor (most of the original files used here are available at [[https://agostinhobritojr.github.io/tutorial/pdi/][Agostinho's Github.io]]). The original file already had in it the implementation for all of the other filters (gaussian, median etc.)
