@@ -509,9 +509,9 @@ Then, from lines 41 to 79 the dotted effect is generated using the randomly sele
 
 Finally, the central part, the one that generates the additional touch, comes at line 81. There, every pixel of *border_image* matrix is checked for values different from zero; if one such pixel is found, its intensity is used to draw a circle on its location whose radius is equal to the *EDGE_RAIO* parameter. After that, the final art is ready and is displayed on screen. Bellow is the result of this second processing.
 
-|---------------------------------+-----------------------------|
-| Dotted image (simple dottilism) | Modified dotted image       |
-|---------------------------------+-----------------------------|
-| [[./figuras/homo_original.png]]     | [[./figuras/homo-filtered.png]] |
-|---------------------------------+-----------------------------|
+|---------------------------------+--------------------------------|
+| Dotted image (simple dottilism) | Modified dotted image          |
+|---------------------------------+--------------------------------|
+| [[./figuras/dot-art.jpg]]           | [[./figuras/modified-dot-art.jpg]] |
+|---------------------------------+--------------------------------|
 
