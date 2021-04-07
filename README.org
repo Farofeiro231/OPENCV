@@ -498,3 +498,20 @@ At first, the user runs the program passing an image path as its sole argument; 
   #define RAIO 3
   #define EDGE_RAIO 2
 #+end_src
+
+Then, from lines 41 to 79 the dotted effect is generated using the randomly selected points of the original image as the color intensity generators for the new image. Before we move on to the differential of the code, however, it's important to talk about the generated image from the output of the Canny processing. In the lines bellow the Canny processing is applied on the original image and the detected borders are stored on the *border* matrix (which is in turn normalized to hold either zeros or ones). Then, a new image is created containing only the pixels on the detected borders, but with their original intensity (ranging from 0 to 255). This is the image that will be used to generate the second round of circles drew on the already dotted image.
+
+#+begin_src cpp
+  Canny(image, border, top_slider, 3 * top_slider);
+  cv::normalize(border, border, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
+  border_image = image.mul(border);
+#+end_src
+
+Finally, the central part, the one that generates the additional touch, comes at line 81. There, every pixel of *border_image* matrix is checked for values different from zero; if one such pixel is found, its intensity is used to draw a circle on its location whose radius is equal to the *EDGE_RAIO* parameter. After that, the final art is ready and is displayed on screen. Bellow is the result of this second processing.
+
+|---------------------------------+-----------------------------|
+| Dotted image (simple dottilism) | Modified dotted image       |
+|---------------------------------+-----------------------------|
+| [[./figuras/homo_original.png]]     | [[./figuras/homo-filtered.png]] |
+|---------------------------------+-----------------------------|
+
