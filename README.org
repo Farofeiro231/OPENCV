@@ -490,4 +490,11 @@ The barebones of the program, including the algorithm to create the "dotted" ima
   }
 #+end_src
 
-At first, the user runs the program passing an image path as its sole argument; this is the image taken as input by the *edge_dotillism* function.
+At first, the user runs the program passing an image path as its sole argument; this is the image taken as input by the *edge_dotillism* function. Once the function is called, it uses a few parameters to generate coordinates that's will be used to draw the circles using the grayscale intensities of the original image. From the parameters below, the *STEP* parameter indicates the length of the side of the adjacent squares from which each point will be taken to retrieve the circle intensity that will replace that region. The size of the circle is determined by the *RAIO* macro. The *EDGE_JITTER* one indicates how randomly will the points be selected, and the *EDGE_RAIO* determines the size of the second circles that are drawn based on the edge's pixels positions (from the Canny algorithm).
+
+#+begin_src cpp
+  #define STEP 5
+  #define EDGE_JITTER 1
+  #define RAIO 3
+  #define EDGE_RAIO 2
+#+end_src
