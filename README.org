@@ -419,3 +419,8 @@ At this point, the image has already been filtered and we're ready to perform th
 |-----------------------------+-----------------------------|
 | [[./figuras/homo_original.png]] | [[./figuras/homo-filtered.png]] |
 |-----------------------------+-----------------------------|
+
+** Dotillism art
+One usage of space-domain image manipulations is the creation of images simulating the painting style called dotillism, and the results are very good considering the little effort put into implementing such solutions. However, one can improve (or modify) the output image by using some image manipulations taking place in the frequency domain. One such technique, employed here in the //freq-filtering/src/cannypoints.cpp/ file is to apply an edge-detection algorithm on the original image and then to use the pixels composing the edges to insert new, smaller circle on top of the first dotted image.
+
+The barebones of the program, including the algorithm to create the "dotted" image was provided by the professor, and it was asked for us to implement an improved version of the dotillism effect by making use of the Canny edges.
