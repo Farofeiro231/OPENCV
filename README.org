@@ -523,18 +523,22 @@ This section deals with a different type of problem: vector quantization of imag
   kmeans(samples,
          nClusters,
          rotulos,
-         TermCriteria(TermCriteria::COUNT | TermCriteria::EPS, 10000, 0.0001),
+         TermCriteria(TermCriteria::COUNT | TermCriteria::EPS, 10, 0.1),
          nRodadas,
          KMEANS_RANDOM_CENTERS,
          centros);
 #+end_src
 
-Above, we can see that two arguments inside the TermCriteria constructor are telling the Kmeans to stop trying to find best clusters as soon as the desired accuracy (/epsilon/) is reached (in this case, 0.0001), or the desired amount of attempts has been reached (10000). However, to see the effect of random centroids initialization, I used the KMEANS_RANDOM_CENTERS argument, which initializes the centroids randomly, in opposition to the other possible argument, KMEANS_PP_CENTERS, which makes the Kmeans to look for optimal initial centroids. To further ensure that the result will not converge to the same centroids each time, I've limited the number of clustering rounds to use by setting *nRodadas = 1*; this way we're sure to see the different clusters selected everytime. Finally, so we can understand the output of the program, it suffices to know that each cluster (for each color channel, as they're treated separately) is given one color intensity (and their quantity is defined by the *nClusters* variable), therefore, the output will have much less color than the original image.
+Above, we can see that two arguments inside the TermCriteria constructor are telling the Kmeans to stop trying to find best clusters as soon as the desired accuracy (/epsilon/) is reached (in this case, 0.0001), or the desired amount of attempts has been reached (10000). However, to see the effect of random centroids initialization, I used the KMEANS_RANDOM_CENTERS argument, which initializes the centroids randomly, in opposition to the other possible argument, KMEANS_PP_CENTERS, which makes the Kmeans to look for optimal initial centroids. To further ensure that the result will not converge to the same centroids each time, I've limited the number of clustering rounds to use by setting *nRodadas = 1* (nClusters = 6); this way we're sure to see the different clusters selected everytime. Finally, so we can understand the output of the program, it suffices to know that each cluster (for each color channel, as they're treated separately) is given one color intensity (and their quantity is defined by the *nClusters* variable), therefore, the output will have much less color than the original image.
 
-Below is the output of the program after five indepent runs on the same image.
+Below is the output of the program after five indepent runs on the same image. Surprisingly, even changing the *count* and *epsilon* parameters to 10 and 0.1, respectly, no clear differences are seen between multiples runs of the program; this means, certainly, that the Kmeans algorithm is either using the same random centroids every time (what would make them not so random, afterall) or that it's very efficient - which is probably the case here.
 
-|-----------------------+------------------------+------------------------|
-| Original imagem       | First run              | Second run             |
-|-----------------------+------------------------+------------------------|
-| [[./figuras/lobster.jpg]] | [[./figuras/lobster1.jpg]] | [[./figuras/lobster2.jpg]] |
-|-----------------------+------------------------+------------------------|
+|------------------------+------------------------+------------------------|
+| Original imagem        | First run              | Second run             |
+|------------------------+------------------------+------------------------|
+| [[./figuras/lobster.jpg]]  | [[./figuras/lobster1.jpg]] | [[./figuras/lobster2.jpg]] |
+|------------------------+------------------------+------------------------|
+| Third run              | Fourth run             | Fifth run              |
+|------------------------+------------------------+------------------------|
+| [[./figuras/lobster3.jpg]] | [[./figuras/lobster4.jpg]] | [[./figuras/lobster5.jpg]] |
+|------------------------+------------------------+------------------------|
