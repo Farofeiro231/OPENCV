@@ -2,13 +2,15 @@
 #include <math.h>
 #include <opencv2/core.hpp>
 #include <opencv2/core/base.hpp>
+#include <opencv2/core/hal/interface.h>
+#include <opencv2/core/matx.hpp>
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-#define RADIUS 30
-#define HOMO_C 2
-#define GAMMA_L 5
-#define GAMMA_H 60
+#define RADIUS 20
+#define HOMO_C 0.7
+#define GAMMA_L 0.2
+#define GAMMA_H 0.5
 
 void on_trackbar_frequency(int, void*) {}
 
@@ -237,11 +239,18 @@ int main(int, char**) {
 
     // combina o array de matrizes em uma unica
     // componente complexa
-    cv::merge(planos, complexImage);
 
     // calcula o dft
-    cv::dft(complexImage, complexImage);
-    // realiza a troca de quadrantes
+	if (!homomorphic) {
+	  cv::merge(planos, complexImage);
+	} else { 
+	  cv::log(planos[0], planos[0]);
+	  cv::log(planos[1], planos[1]); 
+	  cv::merge(planos, complexImage);
+	}
+
+	cv::dft(complexImage, complexImage);
+	// realiza a troca de quadrantes
     deslocaDFT(complexImage);
 
     // exibe o espectro e angulo de fase
@@ -276,10 +285,11 @@ int main(int, char**) {
 
     // aplica o filtro de frequencia: a variável filter é um filtro
 	// ideal com componentes reais e imaginárias iguais.
-	if (!homomorphic)
+	if (!homomorphic) {
 	  cv::mulSpectrums(complexImage, filter, complexImage, 0);
-	else
+	} else {
 	  cv::mulSpectrums(complexImage, filter_homo, complexImage, 0);
+	}
 
 	// limpa o array de planos
     planos.clear();
@@ -313,7 +323,11 @@ int main(int, char**) {
     deslocaDFT(complexImage);
 
     // calcula a DFT inversa
-    cv::idft(complexImage, complexImage);
+	if (!homomorphic) {
+	  cv::idft(complexImage, complexImage);
+	} else {
+	  cv::idft(complexImage, complexImage);
+	}
 
     // limpa o array de planos
     planos.clear();
@@ -324,7 +338,15 @@ int main(int, char**) {
 
     // normaliza a parte real para exibicao
     cv::normalize(planos[0], planos[0], 0, 1, cv::NORM_MINMAX);
-    cv::imshow("filtrada", planos[0]);
+
+	if (!homomorphic) {
+	  cv::imshow("filtrada", planos[0]);
+	} else {
+	  cv::exp(planos[0], planos[0]);
+	  cv::normalize(planos[0], planos[0], 0, 255, cv::NORM_MINMAX);
+	  planos[0].convertTo(planos[0], CV_8U);
+	  cv::imshow("filtrada", planos[0]);
+	}
 
     key = (char)cv::waitKey(10);
     if (key == 27) break;  // esc pressed!

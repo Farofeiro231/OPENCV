@@ -6,7 +6,7 @@ using namespace cv;
 using namespace std;
 
 int main( int argc, char** argv ){
-  int nClusters = 6;
+  int nClusters = 8;
   Mat rotulos;
   int nRodadas = 1;
   Mat centros;
@@ -29,7 +29,7 @@ int main( int argc, char** argv ){
   kmeans(samples,
 		 nClusters,
 		 rotulos,
-		 TermCriteria(TermCriteria::MAX_ITER | TermCriteria::EPS, 10, 0.1),
+		 TermCriteria(TermCriteria::MAX_ITER + TermCriteria::EPS, 2, 0.0001),
 		 nRodadas,
 		 KMEANS_RANDOM_CENTERS,
 		 centros);
