@@ -423,4 +423,71 @@ At this point, the image has already been filtered and we're ready to perform th
 ** Dotillism art
 One usage of space-domain image manipulations is the creation of images simulating the painting style called dotillism, and the results are very good considering the little effort put into implementing such solutions. However, one can improve (or modify) the output image by using some image manipulations taking place in the frequency domain. One such technique, employed here in the //freq-filtering/src/cannypoints.cpp/ file is to apply an edge-detection algorithm on the original image and then to use the pixels composing the edges to insert new, smaller circle on top of the first dotted image.
 
-The barebones of the program, including the algorithm to create the "dotted" image was provided by the professor, and it was asked for us to implement an improved version of the dotillism effect by making use of the Canny edges.
+The barebones of the program, including the algorithm to create the "dotted" image was provided by the professor, and it was asked for us to implement an improved version of the dotillism effect by making use of the Canny edges. The function that does all the work is shown bellow.
+
+#+begin_src cpp
+  cv::Mat edge_dotillism(cv::Mat& image){
+    vector<int> yrange;
+    vector<int> xrange;
+
+    Mat frame, points;
+    static Mat new_image, border_image;
+
+    int width, height, gray;
+    int x, y;
+
+    width=image.size().width;
+    height=image.size().height;
+
+    xrange.resize(height/STEP);
+    yrange.resize(width/STEP);
+
+    iota(xrange.begin(), xrange.end(), 0);
+    iota(yrange.begin(), yrange.end(), 0);
+
+    Canny(image, border, top_slider, 3 * top_slider);
+    cv::normalize(border, border, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
+    border_image = image.mul(border);
+  
+    for(uint i=0; i<xrange.size(); i++){
+      xrange[i]= xrange[i]*STEP+STEP/2;
+    }
+
+    for(uint i=0; i<yrange.size(); i++){
+      yrange[i]= yrange[i]*STEP+STEP/2;
+    }
+
+    points = Mat(height, width, CV_8U, Scalar(255));
+
+    random_shuffle(xrange.begin(), xrange.end());
+
+    for(auto i : xrange) {
+      random_shuffle(yrange.begin(), yrange.end());
+      for(auto j : yrange) {
+        x = i+rand()%(2*EDGE_JITTER)-EDGE_JITTER+1;
+        y = j+rand()%(2*EDGE_JITTER)-EDGE_JITTER+1;
+        gray = image.at<uchar>(x,y);
+        circle(points,
+               cv::Point(y,x),
+               RAIO,
+               CV_RGB(gray,gray,gray),
+               -1,
+               LINE_AA);
+      }
+    }
+
+    for (int i = 0; i < border_image.rows; i++) {
+      for (int j = 0; j < border_image.cols; j++) {
+        if (border_image.at<uchar>(i, j) != 0) {
+          gray = border_image.at<uchar>(i, j);
+          circle(points, cv::Point(j, i), EDGE_RAIO, CV_RGB(gray, gray, gray), -1, LINE_AA);
+        }
+      }
+    }
+
+    imwrite("pontos.jpg", points);
+    return points;
+  }
+#+end_src
+
+At first, the user runs the program passing an image path as its sole argument; this is the image taken as input by the *edge_dotillism* function.

@@ -30,7 +30,7 @@ char TrackbarName[50];
 Mat image, border, art;
 
 
-cv::Mat edge_dotilism(cv::Mat& image){
+cv::Mat edge_dotillism(cv::Mat& image){
   vector<int> yrange;
   vector<int> xrange;
 
@@ -95,7 +95,7 @@ cv::Mat edge_dotilism(cv::Mat& image){
 
 
 void on_trackbar_canny(int, void*){
-  art = edge_dotilism(image);
+  art = edge_dotillism(image);
   imshow("canny", art);
 }
 
