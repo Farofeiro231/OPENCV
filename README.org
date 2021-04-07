@@ -515,3 +515,26 @@ Finally, the central part, the one that generates the additional touch, comes at
 | [[./figuras/dot-art.jpg]]           | [[./figuras/modified-dot-art.jpg]] |
 |---------------------------------+--------------------------------|
 
+
+* K-Means
+This section deals with a different type of problem: vector quantization of images. Here I've worked with the Kmeans clustering algorithm provided by the OPENcv library, and I've used the code at //kmeans/src/kmeans.cpp/ (provided by the professor) as the foundation for the observations here presented. This was a simple matter of observing the effect of a Kmeans clustering with random initialization of the cluster centroids. The parameters of interest here are shown bellow inside the TermCriteria argument of the Kmeans function, as well as in the KMEANS_RANDOM_CENTERS argument.
+
+#+begin_src cpp
+  kmeans(samples,
+         nClusters,
+         rotulos,
+         TermCriteria(TermCriteria::COUNT | TermCriteria::EPS, 10000, 0.0001),
+         nRodadas,
+         KMEANS_RANDOM_CENTERS,
+         centros);
+#+end_src
+
+Above, we can see that two arguments inside the TermCriteria constructor are telling the Kmeans to stop trying to find best clusters as soon as the desired accuracy (/epsilon/) is reached (in this case, 0.0001), or the desired amount of attempts has been reached (10000). However, to see the effect of random centroids initialization, I used the KMEANS_RANDOM_CENTERS argument, which initializes the centroids randomly, in opposition to the other possible argument, KMEANS_PP_CENTERS, which makes the Kmeans to look for optimal initial centroids. To further ensure that the result will not converge to the same centroids each time, I've limited the number of clustering rounds to use by setting *nRodadas = 1*; this way we're sure to see the different clusters selected everytime. Finally, so we can understand the output of the program, it suffices to know that each cluster (for each color channel, as they're treated separately) is given one color intensity (and their quantity is defined by the *nClusters* variable), therefore, the output will have much less color than the original image.
+
+Below is the output of the program after five indepent runs on the same image.
+
+|-----------------------+------------------------+------------------------|
+| Original imagem       | First run              | Second run             |
+|-----------------------+------------------------+------------------------|
+| [[./figuras/lobster.jpg]] | [[./figuras/lobster1.jpg]] | [[./figuras/lobster2.jpg]] |
+|-----------------------+------------------------+------------------------|
